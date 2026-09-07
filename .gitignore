@@ -1,0 +1,26 @@
+# Credentials and personal Codex products
+.env
+.env.*
+.codex/*
+!.codex/agents/
+!.codex/config.toml
+!.codex/hooks.json
+.mcp.json
+
+# Local Python environments and products
+.venv*/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Game/project state, inbox and evidence are private runtime data.
+# Keep the reusable Studio audit tooling as source.
+gamemaster/*
+!gamemaster/tools/
+inbox/
+scripts/player/.runtime/
+
+# Reviewed large media belongs in separately selected release assets.
+*.mp4
+dist/

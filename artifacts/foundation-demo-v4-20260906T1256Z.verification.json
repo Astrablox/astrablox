@@ -1,0 +1,28 @@
+{
+  "status": "ARTIFACT_EXPORTED",
+  "buildId": "foundation-demo-v4-20260906T1256Z",
+  "artifact": "artifacts/foundation-demo-v4-20260906T1256Z.rbxl",
+  "bytes": 108342,
+  "sha256": "151912fd1a9a397ebe58a0dcbbf2b28f20eed713efed12232e6120e38e1cf5e4",
+  "binaryMagicHex": "3c726f626c6f782189ff0d0a1a0a",
+  "verifiedAtUtc": "2026-09-06T13:36:18.393497+00:00",
+  "savedWith": "Roblox Studio Save to File",
+  "separateReopenVerified": true,
+  "readbackPlaceId": 0,
+  "buildIdMatch": true,
+  "mapTreeMatch": true,
+  "workspaceBaseParts": 190,
+  "mapDescendants": 244,
+  "scriptInventorySourceMatch": true,
+  "scriptCount": 3,
+  "auditMatch": true,
+  "initialDoor": {"y": 5, "anchored": true, "colliding": true},
+  "scripts": [
+    {"path": "ReplicatedStorage.Modules.Config", "sha256": "f7c1a97e790076b1af2352f69aac3abb5776ba10e9a30b7c225c7cea7d6a963f"},
+    {"path": "ServerScriptService.DungeonMain", "sha256": "112ebab7d1ecdab6ef4f4fa2d0fcbc4ac87c94df1deba1cbd72db1a655303a2a"},
+    {"path": "StarterPlayer.StarterPlayerScripts.DungeonClient", "sha256": "0568bf07cd92dda77a3c2596974e1cf8ea67ed929ec73422af7460235f214dfb"}
+  ],
+  "uploaded": false,
+  "published": false,
+  "joinVerified": false
+}

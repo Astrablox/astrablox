@@ -1,0 +1,76 @@
+# Portable project configuration. Keep credentials in your environment.
+[mcp_servers.roblox_studio]
+command = "cmd.exe"
+args = ["/d", "/s", "/c", "scripts\\roblox-mcp.cmd"]
+
+[agents."art-director"]
+description = "AstraBlox art-director specialist"
+config_file = "agents/art-director.toml"
+
+[agents."computer-player"]
+description = "AstraBlox computer-player specialist"
+config_file = "agents/computer-player.toml"
+
+[agents."detail-architect"]
+description = "AstraBlox detail-architect specialist"
+config_file = "agents/detail-architect.toml"
+
+[agents."enemy-designer"]
+description = "AstraBlox enemy-designer specialist"
+config_file = "agents/enemy-designer.toml"
+
+[agents."interior-designer"]
+description = "AstraBlox interior-designer specialist"
+config_file = "agents/interior-designer.toml"
+
+[agents."lighting-director"]
+description = "AstraBlox lighting-director specialist"
+config_file = "agents/lighting-director.toml"
+
+[agents."luau-reviewer"]
+description = "AstraBlox luau-reviewer specialist"
+config_file = "agents/luau-reviewer.toml"
+
+[agents."luau-scripter"]
+description = "AstraBlox luau-scripter specialist"
+config_file = "agents/luau-scripter.toml"
+
+[agents."roblox-architect"]
+description = "AstraBlox roblox-architect specialist"
+config_file = "agents/roblox-architect.toml"
+
+[agents."roblox-playtester"]
+description = "AstraBlox roblox-playtester specialist"
+config_file = "agents/roblox-playtester.toml"
+
+[agents."roblox-publisher"]
+description = "AstraBlox roblox-publisher specialist"
+config_file = "agents/roblox-publisher.toml"
+
+[agents."set-dresser"]
+description = "AstraBlox set-dresser specialist"
+config_file = "agents/set-dresser.toml"
+
+[agents."showcase-photographer"]
+description = "AstraBlox showcase-photographer specialist"
+config_file = "agents/showcase-photographer.toml"
+
+[agents."sound-designer"]
+description = "AstraBlox sound-designer specialist"
+config_file = "agents/sound-designer.toml"
+
+[agents."story-teller"]
+description = "AstraBlox story-teller specialist"
+config_file = "agents/story-teller.toml"
+
+[agents."ui-designer"]
+description = "AstraBlox ui-designer specialist"
+config_file = "agents/ui-designer.toml"
+
+[agents."vfx-designer"]
+description = "AstraBlox vfx-designer specialist"
+config_file = "agents/vfx-designer.toml"
+
+[agents."world-builder"]
+description = "AstraBlox world-builder specialist"
+config_file = "agents/world-builder.toml"
