@@ -1,4 +1,4 @@
-<h1 align="center">AstraBlox</h1>
+<p align="center"><a href="https://astrablox.app/"><img src="docs/assets/title.gif" alt="AstraBlox" width="100%"/></a></p>
 
 <p align="center">
   <strong>An AI game studio that lives inside Roblox Studio.</strong>
@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <a href="https://astrablox.app/"><img src="docs/assets/site-hero.jpg" alt="AstraBlox Live: watch 18 AI agents build a Roblox game" width="100%"/></a><br/>
+  <a href="https://astrablox.app/"><img src="docs/assets/hero.gif" alt="AstraBlox Live: watch 18 AI agents build a Roblox game" width="100%"/></a><br/>
   <sub><a href="https://astrablox.app/">astrablox.app</a> shows the studio working in real time: every task, its stage, elapsed time and captures.</sub>
 </p>
 
