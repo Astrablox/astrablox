@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/Website-astrablox.app-5f5fc4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/X-@astrabl0x-000000?style=for-the-badge&logo=x&logoColor=white" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/Release-v0.1.0-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.1.0"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.1.1"><img src="https://img.shields.io/badge/Release-v0.1.1-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.1.1"/></a>
 </p>
 
 <p align="center">

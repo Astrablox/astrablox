@@ -25,11 +25,15 @@ Create gamemaster/logs/cycle-NNN/reports/ for the current bounded task. Read gam
 
 Choose the smallest dependency route proving the requested change. Quality failures precede content expansion. Re-run affected checks after fixes and one final end-to-end acceptance; do not rebuild unrelated rooms after a small fix.
 
+Route visual work by size. Judge by impact, not by the owner's wording. Substantial: the result changes the silhouette or composition of a whole zone, adds a zone, cannot be reached by adjusting named existing objects, or follows a NEEDS DIRECTION verdict whose notes exceed local fixes. Substantial scope gets a creative-planning step first: the architect inspects existing views, compares directions and writes an ART CONTRACT with named acceptance views, captured once before building under an exclusive lease when a Studio is connected; builders build to it; an independent art-director judges it per target. Visual-only scope gets the contract alone, no gameplay re-planning. Small: one property, light, object, local support or rename; producer or a single specialist fixes it directly from the brief's stated visual target and the existing views, no contract and no architect. In a new game establish the art contract before expensive finish work; required gameplay and the first earned traversal still precede final decorative acceptance.
+
+For authorized event-driven spectacle (reveals, transformations, reactions) assign one presentation coordinator, normally the atmosphere owner lighting-director, who writes the PRESENTATION PLAN; name the physical owner of every anchor/emitter/model and the one runtime writer (scripter, owner of the shared presentation-event interface: server fires a named event or attribute change, client presentation reacts, presentation never gates progress). A dependency missing at that interface is a blocker reported by the role that hits it; nobody builds a duplicate controller or emitter to work around it.
+
 Example dependency route for a small indoor escape (adapt to the owner's concept):
 1. Architect: scope, layout, style reference, ownership/interfaces and acceptance scenarios.
 2. Scripter + world-builder in parallel with disjoint Edit-only ownership.
 3. Integration barrier, independent code/structural checks, exclusive first playable test. Required mechanics/threats belong here, before decoration.
-4. If polish is authorized, world-builder acts as environment owner (structure/detail/props), then lighting-director as atmosphere owner (lighting/audio/VFX). Assign those combined scopes explicitly. Scripter can implement the agreed UI/theme/text. Narrow specialists are optional routes.
+4. If polish is authorized, the art contract comes first when the scope is substantial; then world-builder acts as environment owner (structure/detail/props), then lighting-director as atmosphere owner (lighting/audio/VFX). Assign those combined scopes explicitly. Scripter can implement the agreed UI/theme/text. Narrow specialists are optional routes.
 5. Final independent code review of all final code including UI/atmosphere additions, independent art review, structural/behavior QA, exclusive player acceptance.
 6. Record build identity/evidence. Export/capture/publish only as authorized, with explicit release-artifact verification. Finish when acceptance criteria are met.
 
@@ -49,21 +53,21 @@ Each interactable has one physical author and one runtime state writer, named wi
 
 ## Briefs and specialist registry
 
-Spawn with fork_turns: "none"; paste necessary context. Respect the host's available concurrency slots. Only independent jobs overlap. Inherit current model and retain role reasoning settings; no model/pricing assumptions. Every brief contains task/run ID, mode, goal, architecture excerpt, genre/style, dimensions, asset/performance budget, ownership, lease/exclusions, acceptance cases, deadline, report path and expected markers. Include: "Do not ask questions and do not send status updates. Decide, list assumptions in your report, build, verify, report once." This does not authorize inventing a critical target or ignoring a permission/tool blocker: report it and finish safe independent work.
+Spawn with fork_turns: "none"; paste necessary context. Respect the host's available concurrency slots. Only independent jobs overlap. Inherit current model and retain role reasoning settings; no model/pricing assumptions. Every brief contains task/run ID, mode, goal, architecture excerpt, the art-contract excerpt with acceptance views when one exists or else the explicit visual target and views, genre/style, dimensions, asset/performance budget, ownership, lease/exclusions, acceptance cases, deadline, report path and expected markers. Include: "Do not ask questions and do not send status updates. Decide, list assumptions in your report, build, verify, report once." This does not authorize inventing a critical target or ignoring a permission/tool blocker: report it and finish safe independent work.
 
 All roles remain discoverable; choose by responsibility:
 | Role | Responsibility / route | Marker |
 |---|---|---|
-| roblox-architect | New scope or material interface/layout change; text-only | ARCHITECTURE DESIGNED, READY FOR REVIEW |
-| luau-scripter | Scripts/remotes/functional UI and code fixes | SCRIPTS CREATED:, READY FOR REVIEW |
-| world-builder | Static/tagged world; combined environment when assigned | WORLD BUILT:, TOTAL PART COUNT: |
+| roblox-architect | New scope or material interface/layout change; substantial visual scope; text-only | ARCHITECTURE DESIGNED, ART CONTRACT:, READY FOR REVIEW |
+| luau-scripter | Scripts/remotes/functional UI and code fixes; presentation-event interface when assigned | SCRIPTS CREATED:, PRESENTATION INTERFACE:, READY FOR REVIEW |
+| world-builder | Static/tagged world; combined environment when assigned | WORLD BUILT:, TOTAL PART COUNT:, VIEW READBACK: |
 | interior-designer | Complex room blueprint when a separate handoff helps | ROOM PLAN:, OBJECT MANIFEST:, READY FOR REVIEW |
 | detail-architect | Assigned infrastructure/detail | ARCH DETAIL ADDED: |
 | set-dresser | Assigned props/assets | PROPS ADDED:, STORY: |
-| lighting-director | Lighting; combined atmosphere when assigned | LIGHTING DESIGNED: |
+| lighting-director | Lighting; combined atmosphere and presentation coordination when assigned | LIGHTING DESIGNED:, PRESENTATION PLAN: |
 | sound-designer | Dedicated audio mix/spatial work | AUDIO DESIGNED: |
-| vfx-designer | Dedicated environmental effects | VFX DESIGNED: |
-| art-director | Independent early/final player-view art review | COMPOSITION VERDICT: ALL CLEAN / NEEDS DIRECTION |
+| vfx-designer | Dedicated environmental or event effects | VFX DESIGNED:, CUE SPEC: |
+| art-director | Independent early/final player-view art review | COMPOSITION VERDICT: ALL CLEAN / NEEDS DIRECTION, TARGETS: |
 | enemy-designer | Specified threat; before first playable if core | ENEMY CREATED: |
 | story-teller | Narrative writing/display if warranted | NARRATIVE DESIGNED: |
 | luau-reviewer | Independent final executable-code/security review | VERDICT: PASS / NEEDS FIXES |
@@ -83,7 +87,7 @@ Code: server-authoritative progress; validate remote types, finite values, bound
 
 Assets: choose suitable primitives, modular mesh kits, generated/procedural models, Creator Store assets, Terrain, textures/materials and authorized imports through actual tools. Record provenance/source ID, permitted use, import/load status, scale, material consistency, collision and dependencies. Budget BaseParts/instances and measured geometry/texture/memory/frame cost where observable; unknown values stay unknown. Terrain needs traversal/region evidence and cost checks, not Floor-named parts. Generation has a time budget and deliberate fallback; unresolved important visuals remain blockers for a showcase claim.
 
-Art: inspect real player-eye frames for route/interaction readability, hierarchy, silhouette, scale, materials and composition. White lights, silence, no bloom, sparse props or zero narrative triggers are not automatic faults. Light/audio/VFX limits are scene-specific budgets; conservative defaults are warnings. Audio needs client runtime load/audibility evidence; properties do not prove listening. Effects need usable textures. Separate blocking art failures from suggestions.
+Art: inspect real player-eye frames for route/interaction readability, hierarchy, silhouette, scale, materials and composition. Functional acceptance and artistic attainment are separate verdicts: ALL CLEAN means no blocking violation of the agreed target; each art-contract target (or the brief's stated targets) is additionally ACHIEVED / MISSED / UNOBSERVED, judged from the contract's acceptance views against the matching before views. Motion (animation, effects, reveals) needs a clip or timed frame sequence; stills leave it UNOBSERVED. Reserve one bounded revision round for MISSED targets (or the owner's stated number); afterwards report residual misses, never loop for perfection. The final art review is a separate art-director invocation from whoever authored the direction; the architect never reviews its own contract; no builder mutates during the review lease. White lights, silence, no bloom, sparse props or zero narrative triggers are not automatic faults. Light/audio/VFX limits are scene-specific budgets; conservative defaults are warnings. Audio needs client runtime load/audibility evidence; properties do not prove listening. Effects need usable textures. Separate blocking art failures from suggestions.
 
 Gameplay: derive tests from the owner's core loop and acceptance contract: precondition refusal, reachable interactions, ordinary controls, physical traversal and visible/server outcomes; repeat/reset/death/fresh replay semantics; malformed/out-of-range requests cannot grant progress. For the selected escape example, test locked-door blocking, early portal refusal, pickup, unlock, passage and completion. Distinguish visual play, instrumented diagnostics and regression. Tool/control failures are BLOCKED/INCONCLUSIVE, not invented game bugs. No teleport/set-state success claims. Record console evidence and observed duration; ten seconds at startup is not five-minute stability evidence.
 

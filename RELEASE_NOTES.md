@@ -1,3 +1,17 @@
+# v0.1.1 — Visual direction and review
+
+Date: 2026-09-08.
+
+- For substantial visual work, the architect compares feasible directions and defines silhouette, setting, depth, materials and player-eye acceptance views.
+- Small visual fixes use a focused brief without requiring a full art contract.
+- Art reviews report each visual target as achieved, missed or unobserved. Animation and effects require motion evidence.
+- Presentation planning coordinates lighting, VFX, animation and scripting with explicit ownership, triggers and cleanup responsibilities.
+- Narrative briefs connect the purpose of a place or event to its visual direction.
+
+This release updates the producer instructions and seven of the existing 18 specialist profiles. Setup, launcher and player tools remain compatible.
+
+Profile and registration checks passed. Planning trials covered local fixes, environment direction and event coordination; one architectural deliverable remained incomplete at its deadline. Runtime checks recorded 17/18 launcher tests and 26/27 player tests passing on the first run, with a launcher timeout and an encoder cadence failure; these tools are unchanged from v0.1.0. Visual results still need an in-game pilot.
+
 # v0.1.0 — framework baseline
 
 Date: 2026-09-07.
