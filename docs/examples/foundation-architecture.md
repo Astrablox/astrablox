@@ -1,3 +1,9 @@
+> Historical example (September 6, 2026). This is the two-room smoke test that proved the pipeline
+> mechanics: leases, parallel builders, review gates, an earned player run. It predates the art
+> direction step and the style kit. Its dimensions, part budgets, primitive-only asset plan,
+> effect and sound caps and the key/door/portal loop are properties of that test, not defaults for
+> any new game. Use it to see the shape of an architecture document; take nothing else from it.
+
 # The Key Remembers — Architecture
 
 DOCUMENT TYPE: A — tiny new-game smoke test.

@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/Website-astrablox.app-5f5fc4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/X-@astrabl0x-000000?style=for-the-badge&logo=x&logoColor=white" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.1.1"><img src="https://img.shields.io/badge/Release-v0.1.1-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.1.1"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/Release-v0.2.0-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.2.0"/></a>
 </p>
 
 <p align="center">
@@ -22,7 +22,7 @@
 </p>
 
 <p align="center">
-  <a href="https://astrablox.app/"><img src="docs/assets/hero.gif" alt="AstraBlox Live: watch 18 AI agents build a Roblox game" width="100%"/></a><br/>
+  <a href="https://astrablox.app/"><img src="docs/assets/hero.gif" alt="AstraBlox Live: watch AI agents build a Roblox game" width="100%"/></a><br/>
   <sub><a href="https://astrablox.app/">astrablox.app</a> shows the studio working in real time: every task, its stage, elapsed time and captures.</sub>
 </p>
 
@@ -30,7 +30,7 @@
 
 ## What is this?
 
-AstraBlox turns one sentence into a Roblox experience built directly in your open Roblox Studio through its MCP server. It is not a template generator: a Game Master writes an architecture for your concept, hands the pieces to 18 specialist agents (architect, scripter, world-builder, lighting, sound, VFX, enemies, story, UI and more), checks what actually landed in Studio after every step, and does not call the job done until an independent reviewer and a player agent agree.
+AstraBlox turns one sentence into a Roblox experience built directly in your open Roblox Studio through its MCP server. It is not a template generator: a Game Master writes an architecture for your concept, hands the pieces to 15 specialist agents (architect, scripter, world-builder, lighting, sound, VFX, enemies, story, UI and more), checks what actually landed in Studio after every step, and does not call the job done until an independent reviewer and a player agent agree.
 
 - **Real worlds, not cubes.** Generated 3D meshes and materials, Creator Store assets, terrain, hazards, layered audio, particles, cinematic lighting.
 - **It can see.** Agents capture the viewport and judge a room the way a level designer would, then rebuild what fails.
@@ -114,21 +114,29 @@ Under the hood: `scripts/run.ps1` starts one Codex session with a finite run rec
 
 ---
 
-## The 18 specialists
+## The 15 specialists
 
-Roles are tools the producer picks from, not a mandatory pipeline. Each one is a small TOML profile in [`.codex/agents/`](.codex/agents/) with its responsibility, brief contract and the marker it must return.
+Roles are tools the producer picks from, not a mandatory pipeline. Each one is a TOML profile in [`.codex/agents/`](.codex/agents/) with its responsibility, craft, criteria and the markers it returns. Craft reference the roles load on demand lives in [`.agents/skills/`](.agents/skills/) (environment art, materials, lighting and atmosphere, VFX, Luau, Studio MCP playbook, asset sourcing).
 
 <details open>
-<summary><strong>📐 Plan and build</strong></summary>
+<summary><strong>📐 Design and direction</strong></summary>
 
 | Role | Purpose |
 |---|---|
-| `roblox-architect` | Turns the concept into layout, ownership, interfaces, asset budget and acceptance scenarios |
-| `luau-scripter` | Implements scripts, remotes, functional UI and runtime state in Studio |
-| `world-builder` | Builds the static, tagged world; can own a full environment pass |
-| `interior-designer` | Plans a complex room: identity, object manifest, story purpose |
-| `detail-architect` | Adds infrastructure and substrate-appropriate detail |
-| `set-dresser` | Places props and focal assets from the environment brief |
+| `roblox-architect` | Concept → loop, zones, route and reveals, systems, ownership, acceptance scenarios, build order |
+| `art-director` | DIRECTION: visual direction, palette, materials, the style kit found through the tools, acceptance views. REVIEW: a fresh instance judging captures |
+| `story-teller` | Purpose of places and events for environment storytelling; in-game text |
+
+</details>
+
+<details open>
+<summary><strong>👷 Build</strong></summary>
+
+| Role | Purpose |
+|---|---|
+| `world-builder` | One zone end to end: blockout, rebuild to the direction with the style kit, detail, set dressing, terrain; one instance per zone |
+| `luau-scripter` | Game systems, server authority, remotes, functional UI logic, presentation event interface |
+| `enemy-designer` | Creatures and combat: rig, AI, telegraphs, damage authority, combat events |
 
 </details>
 
@@ -137,12 +145,10 @@ Roles are tools the producer picks from, not a mandatory pipeline. Each one is a
 
 | Role | Purpose |
 |---|---|
-| `lighting-director` | Designs lighting; can own audio and VFX as the single atmosphere owner |
-| `sound-designer` | Ambient and spatial mix with load and listening evidence |
-| `vfx-designer` | Environmental particles and beams with measured readability and cost |
-| `ui-designer` | Readable desktop and touch UI states; new code goes to review |
-| `story-teller` | Concise narrative beats and their in-game display |
-| `enemy-designer` | Specified threats, AI and patrols, built before the first playable test |
+| `lighting-director` | Lighting, atmosphere, post-processing, sky, local light as composition |
+| `vfx-designer` | Event cues end to end: particles, beams, mesh VFX, light, camera shake, timing and their client code |
+| `sound-designer` | Ambient bed, spot ambiences, buses, reverb zones, combat layers |
+| `ui-designer` | HUD and menus: hierarchy, states, feedback, desktop and touch |
 
 </details>
 
@@ -151,10 +157,9 @@ Roles are tools the producer picks from, not a mandatory pipeline. Each one is a
 
 | Role | Purpose |
 |---|---|
-| `luau-reviewer` | Final read-only review of all executable code: security, lifecycle, integration, performance |
-| `art-director` | Player-view composition verdict: ALL CLEAN or NEEDS DIRECTION |
-| `roblox-playtester` | Architecture-driven static and behavioural QA under an exclusive runtime lease |
-| `computer-player` | Live player acceptance with ordinary input; visual, instrumented or regression mode |
+| `luau-reviewer` | Read-only review of all executable code, including presentation and UI code |
+| `roblox-playtester` | Architecture-driven structural and behavioural QA under an exclusive lease |
+| `computer-player` | Earned completion with ordinary controls; feel observations |
 
 </details>
 
@@ -163,7 +168,7 @@ Roles are tools the producer picks from, not a mandatory pipeline. Each one is a
 
 | Role | Purpose |
 |---|---|
-| `showcase-photographer` | Labelled captures of the accepted build with its build ID |
+| `showcase-photographer` | Trailer-grade captures of the accepted build with its build ID |
 | `roblox-publisher` | Export, upload and publish only an explicitly authorised build; reports each state separately |
 
 </details>
@@ -239,9 +244,11 @@ The more mood and mechanics you give it, the better the game.
 astrablox/
 ├── AGENTS.md                 producer contract: modes, leases, briefs, evidence, recovery
 ├── .codex/
-│   ├── config.toml           Studio MCP wrapper + 18 role registrations (no credentials)
+│   ├── config.toml           Studio MCP wrapper + 15 role registrations (no credentials)
 │   ├── hooks.json            Stop hook wiring
 │   └── agents/*.toml         one profile per specialist
+├── .agents/skills/           craft reference the roles load on demand (environment art, materials,
+│                             lighting, VFX, Luau, Studio MCP playbook, asset sourcing)
 ├── scripts/
 │   ├── run.ps1 / stop.ps1    bounded launcher, resume, cooperative stop
 │   ├── roblox-mcp.cmd        relative Studio MCP wrapper
@@ -285,6 +292,8 @@ The launcher suite runs against a fake Codex in isolated workspaces; the player 
 
 **Proven (v0.1.0).** One dated escape build was designed, built in parallel, reviewed, audited and completed five times by the player agent with ordinary controls, reaching a 321-second server clock with zero new console errors. The exported `.rbxl` was saved, re-opened and matched by hash, tree and script sources. Full record: [artifacts/README.md](artifacts/README.md).
 
+**v0.2.0.** The studio's craft and pipeline were rebuilt for AAA-scale fantasy work: art direction with a style kit, one builder per zone, effects owned end to end, set pieces delivered as clips. The first build on this version is still to be run; see [RELEASE_NOTES.md](RELEASE_NOTES.md).
+
 **Not yet claimed.** Other genres, blind visual discovery, reset and death handling, multiplayer and mobile, adversarial remotes, publication and ordinary-player joining each need their own build and evidence before they appear here as supported. Referenced Roblox assets keep their own permissions; see [referenced content](artifacts/README.md#referenced-roblox-content).
 
 ---
@@ -302,5 +311,5 @@ Framework code and documentation are released under the [MIT license](LICENSE). 
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/🌐_Website-astrablox.app-5f5fc4?style=for-the-badge" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/𝕏_Follow-@astrabl0x-000000?style=for-the-badge" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.1.0"><img src="https://img.shields.io/badge/⬇_Release-v0.1.0-2ea44f?style=for-the-badge" alt="Release"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/⬇_Release-v0.2.0-2ea44f?style=for-the-badge" alt="Release"/></a>
 </p>

@@ -3,74 +3,65 @@
 command = "cmd.exe"
 args = ["/d", "/s", "/c", "scripts\\roblox-mcp.cmd"]
 
-[agents."art-director"]
-description = "AstraBlox art-director specialist"
-config_file = "agents/art-director.toml"
-
-[agents."computer-player"]
-description = "AstraBlox computer-player specialist"
-config_file = "agents/computer-player.toml"
-
-[agents."detail-architect"]
-description = "AstraBlox detail-architect specialist"
-config_file = "agents/detail-architect.toml"
-
-[agents."enemy-designer"]
-description = "AstraBlox enemy-designer specialist"
-config_file = "agents/enemy-designer.toml"
-
-[agents."interior-designer"]
-description = "AstraBlox interior-designer specialist"
-config_file = "agents/interior-designer.toml"
-
-[agents."lighting-director"]
-description = "AstraBlox lighting-director specialist"
-config_file = "agents/lighting-director.toml"
-
-[agents."luau-reviewer"]
-description = "AstraBlox luau-reviewer specialist"
-config_file = "agents/luau-reviewer.toml"
-
-[agents."luau-scripter"]
-description = "AstraBlox luau-scripter specialist"
-config_file = "agents/luau-scripter.toml"
+# Specialist roles. Descriptions tell the producer when to call each one; craft lives in the
+# role file and in the repository skills under .agents/skills/.
 
 [agents."roblox-architect"]
-description = "AstraBlox roblox-architect specialist"
+description = "First step of a new game or new scope: turns the owner's concept into the loop, zones and route with reveals, systems and interfaces, ownership table, acceptance scenarios and build order. Text only. Runs before art-director DIRECTION."
 config_file = "agents/roblox-architect.toml"
 
-[agents."roblox-playtester"]
-description = "AstraBlox roblox-playtester specialist"
-config_file = "agents/roblox-playtester.toml"
-
-[agents."roblox-publisher"]
-description = "AstraBlox roblox-publisher specialist"
-config_file = "agents/roblox-publisher.toml"
-
-[agents."set-dresser"]
-description = "AstraBlox set-dresser specialist"
-config_file = "agents/set-dresser.toml"
-
-[agents."showcase-photographer"]
-description = "AstraBlox showcase-photographer specialist"
-config_file = "agents/showcase-photographer.toml"
-
-[agents."sound-designer"]
-description = "AstraBlox sound-designer specialist"
-config_file = "agents/sound-designer.toml"
-
-[agents."story-teller"]
-description = "AstraBlox story-teller specialist"
-config_file = "agents/story-teller.toml"
-
-[agents."ui-designer"]
-description = "AstraBlox ui-designer specialist"
-config_file = "agents/ui-designer.toml"
-
-[agents."vfx-designer"]
-description = "AstraBlox vfx-designer specialist"
-config_file = "agents/vfx-designer.toml"
+[agents."art-director"]
+description = "Two modes named in the brief. DIRECTION: after architecture and before finish work, picks the visual direction, palette, material language, the style kit found through the tools, lighting mood and named acceptance views. REVIEW: a fresh instance after builders and atmosphere, judges captures only and returns addressed notes; never the instance that wrote the direction."
+config_file = "agents/art-director.toml"
 
 [agents."world-builder"]
-description = "AstraBlox world-builder specialist"
+description = "Builds one zone end to end: playable blockout during systems work, then the rebuild to the art direction with the style kit, architectural detail, set dressing and terrain, and the readback of its acceptance views. Spawn one instance per zone under EDIT_SHARED."
 config_file = "agents/world-builder.toml"
+
+[agents."luau-scripter"]
+description = "Implements game systems in Studio: server-authoritative progress and combat, validated remotes, functional UI logic, and the presentation event interface that vfx-designer consumes. Runs in parallel with blockout; its code goes to luau-reviewer."
+config_file = "agents/luau-scripter.toml"
+
+[agents."enemy-designer"]
+description = "Creatures and combat: rig, AI states and telegraphs, pathfinding, server damage authority, and the combat events that vfx-designer and sound-designer react to. Call before the first playable whenever the concept has threats."
+config_file = "agents/enemy-designer.toml"
+
+[agents."lighting-director"]
+description = "After zones are rebuilt: global lighting, atmosphere, post-processing, sky and local light as composition, captured before and after on the acceptance views. Needs EDIT_EXCLUSIVE. Runs before vfx-designer."
+config_file = "agents/lighting-director.toml"
+
+[agents."vfx-designer"]
+description = "Event cues end to end: particles, beams, mesh VFX, light flashes, camera shake, timing and the client presentation code that reacts to the scripter's events. Call after lighting for spells, gates, bosses, reveals and combat feel; its code goes to luau-reviewer."
+config_file = "agents/vfx-designer.toml"
+
+[agents."sound-designer"]
+description = "Ambient bed, spot ambiences, buses and reverb zones, combat sound layers driven by the presentation events. Call after vfx-designer; reports what was actually heard."
+config_file = "agents/sound-designer.toml"
+
+[agents."ui-designer"]
+description = "HUD and menus to the art direction: hierarchy, states, feedback, desktop and touch layouts, UI motion. Call after systems exist; any code it adds goes to luau-reviewer."
+config_file = "agents/ui-designer.toml"
+
+[agents."story-teller"]
+description = "Gives places and events their purpose for environment storytelling and presentation, and writes the short in-game text. Call when the concept carries narrative, after architecture and before builders finish."
+config_file = "agents/story-teller.toml"
+
+[agents."luau-reviewer"]
+description = "Independent read-only review of every executable script in the DataModel, including client presentation and UI code, after the last code change. Returns addressed findings and a verdict."
+config_file = "agents/luau-reviewer.toml"
+
+[agents."roblox-playtester"]
+description = "Independent structural and behavioural QA against the architecture's acceptance scenarios under PLAY_EXCLUSIVE: first playable after the integration barrier, and final acceptance before computer-player."
+config_file = "agents/roblox-playtester.toml"
+
+[agents."computer-player"]
+description = "Earned completion of the accepted build with ordinary controls under PLAY_EXCLUSIVE, plus feel observations from frames. Last gameplay gate before capture and release."
+config_file = "agents/computer-player.toml"
+
+[agents."showcase-photographer"]
+description = "Trailer-grade captures of an accepted build, bound to its build id, on the acceptance views and a shot list. Call after acceptance, before release."
+config_file = "agents/showcase-photographer.toml"
+
+[agents."roblox-publisher"]
+description = "Exports, uploads or publishes only a build the owner explicitly released; reports exported, uploaded, published and join-verified as separate states."
+config_file = "agents/roblox-publisher.toml"

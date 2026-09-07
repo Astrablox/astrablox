@@ -49,8 +49,11 @@ if map then
 	for _, room in map:GetChildren() do
 		local props = room:FindFirstChild("Props")
 		local detail = room:FindFirstChild("ArchDetail")
+		local blockout = room:FindFirstChild("Blockout")
 		local rp = props and count(props, function(i) return i:IsA("BasePart") end) or -1
 		local dp = detail and count(detail, function(i) return i:IsA("BasePart") end) or -1
+		-- Blockout is throwaway scaffolding; anything left here after the rebuild is unfinished work.
+		local bp = blockout and count(blockout, function(i) return i:IsA("BasePart") end) or 0
 		local bad = 0
 		for _, folder in { props, detail } do
 			if folder then
@@ -59,36 +62,53 @@ if map then
 				end
 			end
 		end
-		add(("ROOM %s parts=%d props=%d detail=%d unanchoredOrCollidableDetail=%d"):format(room.Name,
-			count(room, function(i) return i:IsA("BasePart") end), rp, dp, bad))
+		add(("ZONE %s parts=%d props=%d detail=%d blockoutLeftover=%d unanchoredOrCollidableDetail=%d"):format(room.Name,
+			count(room, function(i) return i:IsA("BasePart") end), rp, dp, bp, bad))
 	end
 else
 	add("WORLD Map folder MISSING")
 end
 add(("SPAWNS total=%d"):format(count(ws, function(i) return i:IsA("SpawnLocation") end)))
 local meshes = count(ws, function(i) return i:IsA("MeshPart") end)
-add(("MESHES total=%d"):format(meshes))
+local plainParts = count(ws, function(i) return i:IsA("Part") end)
+local surfApp = count(ws, function(i) return i:IsA("SurfaceAppearance") end)
+local emissive = 0
+for _, o in ws:GetDescendants() do
+	if o:IsA("SurfaceAppearance") then
+		local ok, v = pcall(function() return (o :: any).EmissiveMaskContent end)
+		if ok and v ~= nil and tostring(v) ~= "" and tostring(v) ~= "Content()" then emissive += 1 end
+	end
+end
+local variants = count(game:GetService("MaterialService"), function(i) return i:IsA("MaterialVariant") end)
+local procedural = count(ws, function(i) return i.ClassName == "ProceduralModel" end)
+add(("BUILD meshParts=%d plainParts=%d surfaceAppearances=%d emissiveMasks=%d materialVariants=%d proceduralModels=%d"):format(
+	meshes, plainParts, surfApp, emissive, variants, procedural))
+add(("BUILD workspaceStreaming=%s meshStreamingLoDs=%s"):format(tostring(ws.StreamingEnabled),
+	tostring((pcall(function() return (ws :: any).MeshStreamingAndImprovedLoDs end)) and (ws :: any).MeshStreamingAndImprovedLoDs or "n/a")))
+add("BUILD inventoryOnly=true; ratios describe what the world is made of, not its quality")
 
 -- LIGHTING ------------------------------------------------------------------
 local L = game:GetService("Lighting")
--- Lighting.Technology needs the RobloxScript capability, which execute_luau does not have → pcall
-local techOk, tech = pcall(function() return tostring(L.Technology) end)
-add(("LIGHTING tech=%s clock=%.1f brightness=%.2f ambient=%s"):format(techOk and tech or "n/a", L.ClockTime, L.Brightness, tostring(L.Ambient)))
+-- LightingStyle replaced Lighting.Technology (deprecated). Some properties need capabilities
+-- execute_luau does not have → pcall and report n/a.
+local styleOk, style = pcall(function() return tostring((L :: any).LightingStyle) end)
+local prioOk, prio = pcall(function() return tostring((L :: any).PrioritizeLightingQuality) end)
+add(("LIGHTING style=%s prioritizeQuality=%s clock=%.1f brightness=%.2f exposure=%.2f ambient=%s outdoorAmbient=%s envDiffuse=%.2f envSpecular=%.2f"):format(
+	styleOk and style or "n/a", prioOk and prio or "n/a", L.ClockTime, L.Brightness, L.ExposureCompensation,
+	tostring(L.Ambient), tostring(L.OutdoorAmbient), L.EnvironmentDiffuseScale, L.EnvironmentSpecularScale))
 local fx = {}
 for _, c in L:GetChildren() do table.insert(fx, c.ClassName) end
-add("LIGHTING effects=" .. (#fx > 0 and table.concat(fx, ",") or "NONE"))
+add("LIGHTING children=" .. (#fx > 0 and table.concat(fx, ",") or "NONE"))
 local atmos = L:FindFirstChildOfClass("Atmosphere")
-if atmos and atmos.Density > 0.4 then add(("LIGHTING WARN atmosphere density %.2f > 0.4"):format(atmos.Density)) end
-local bloom = L:FindFirstChildOfClass("BloomEffect")
-if bloom and (bloom.Intensity > 0.5 or bloom.Threshold < 0.5) then add("LIGHTING WARN bloom exceeds conservative defaults; inspect player-view readability") end
-local lights, white = 0, 0
+if atmos then add(("ATMOSPHERE density=%.2f offset=%.2f haze=%.2f glare=%.2f"):format(atmos.Density, atmos.Offset, atmos.Haze, atmos.Glare)) end
+local lights, shadowLights = 0, 0
 for _, o in ws:GetDescendants() do
 	if o:IsA("PointLight") or o:IsA("SpotLight") or o:IsA("SurfaceLight") then
 		lights += 1
-		if o.Color.R > 0.95 and o.Color.G > 0.95 and o.Color.B > 0.95 then white += 1 end
+		if (o :: Light).Shadows then shadowLights += 1 end
 	end
 end
-add(("LIGHTS total=%d white=%d"):format(lights, white))
+add(("LIGHTS total=%d shadowCasting=%d"):format(lights, shadowLights))
 
 -- AUDIO / VFX ---------------------------------------------------------------
 local running = game:GetService("RunService"):IsRunning()
@@ -105,7 +125,7 @@ for _, o in game:GetDescendants() do
         if o.Looped and not o.Playing then notPlaying += 1 end
 	end
 end
-add(("AUDIO sounds=%d volumeOverConservativeDefault=%d emptySoundId=%d loopedStoppedObserved=%d groups=%d"):format(sounds, loud, noAsset, notPlaying,
+add(("AUDIO sounds=%d volumeAbove0.7=%d emptySoundId=%d loopedStoppedObserved=%d groups=%d"):format(sounds, loud, noAsset, notPlaying,
 	count(game:GetService("SoundService"), function(i) return i:IsA("SoundGroup") end)))
 add(("AUDIO running=%s client=%s loadedObserved=%d playingObserved=%d audible=NOT_TESTED templatesAndInactiveZonesMayBeStopped=true"):format(tostring(running), tostring(isClient), loaded, playing))
 local emitters, rate, beamsBad, emptyTextures = 0, 0, 0, 0
@@ -131,5 +151,5 @@ add(("UI screenGuis=%d corners=%d strokes=%d"):format(guis,
 	count(game:GetService("StarterGui"), function(i) return i:IsA("UIStroke") end)))
 
 add("COST geometryMemory=UNKNOWN textureMemory=UNKNOWN frameTime=UNKNOWN terrainTraversal=NOT_TESTED")
-add("INTERPRETATION whiteLights/effectCounts/lineCounts/stoppedEditLoops are observations, not failures; compare architecture and behavior")
+add("INTERPRETATION all counts are inventory; quality is judged from captures, clips and behaviour against the art direction and architecture")
 return table.concat(out, "\n")

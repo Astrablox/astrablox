@@ -1,3 +1,21 @@
+# v0.2.0 — Craft, direction and set pieces
+
+Date: 2026-09-08.
+
+The biggest step the studio has taken since the framework baseline. v0.1 proved the pipeline: leases, parallel builders, independent review, a player agent that earns its completion. v0.2.0 gives that pipeline a studio's craft and points it at AAA-scale fantasy work.
+
+- Every specialist profile rewritten around its craft: what an environment artist, a lighting director, an effects artist, a sound designer, a level designer and a code reviewer actually do, in their own terms, with criteria that describe the finished result.
+- Seven repository skills in `.agents/skills/` that roles load on demand: environment art, materials and PBR, lighting and atmosphere (with an audio reference), VFX and game feel, Luau and the current engine API, the Studio MCP playbook, and asset sourcing. Knowledge lives once, next to the role that acts on it.
+- Art direction as a step: before finish work, the art director chooses a direction, builds a verified style kit of real assets in the place, and names the acceptance views. A fresh art director instance later reviews from captures only.
+- One hand per zone: `world-builder` now carries a zone from blockout through rebuild, architectural detail and set dressing. `interior-designer`, `detail-architect` and `set-dresser` fold into it; the roster is 15 roles.
+- Effects owned end to end: `vfx-designer` builds a cue from anticipation to dissipate, including camera work and the client presentation code, and can direct a full sequence with camera choreography.
+- Set pieces as a task type: one directed moment, delivered as a recorded clip from the player's camera and judged as a clip.
+- Producer contract updated for the current generation of models: a definition of done for a build, explicit delegation and parallelism rules, an order of work that rebuilds the blockout to the direction instead of decorating it, and the vertical slice as the fallback when the budget is short.
+- Studio audit reports what the world is made of (mesh parts, surface appearances, material variants, emissive masks, procedural models, leftover blockout) and the current lighting properties; counts are inventory, quality is judged from captures.
+- Role registrations describe when to call each specialist; the historical two-room example is marked as the smoke test it was.
+
+Profile, registration and marker checks passed; launcher fixtures run as before. The first build on this version is still to be run, so its visual results are not yet claimed here.
+
 # v0.1.1 — Visual direction and review
 
 Date: 2026-09-08.

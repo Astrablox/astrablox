@@ -1,3 +1,7 @@
+> Historical example (September 6, 2026): the environment acceptance contract of the two-room
+> smoke test, written before the art-director DIRECTION step existed. Today the equivalent
+> document is the ART DIRECTION with a style kit and acceptance views; see AGENTS.md.
+
 # Foundation demonstration: environment acceptance contract
 
 Status: planned polish, not visual acceptance. Applies after the first earned traversal.
