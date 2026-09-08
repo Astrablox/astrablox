@@ -33,4 +33,9 @@ changed files. `tools/studio/` gives both the evidence: `run_digest.py` (a cycle
 the markers the producer expects), `session_digest.py` (Codex session JSONL as trajectories) and
 `check_studio.py` (the static gate every change must pass). `docs/journal.md` records every change
 to the studio with its reason and how to verify it; `docs/inventory.md` numbers the problems and
+<<<<<<< HEAD
 their fates.
+=======
+their fates. `tools/assets/`, `assets-library/` and `tools/check/` are the roles' own tools for real
+assets and checked code; `tools/assets/README.md` describes them.
+>>>>>>> harness-local

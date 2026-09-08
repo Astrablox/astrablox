@@ -264,7 +264,15 @@ astrablox/
 │   ├── hooks/stop_continue.py
 │   └── player/               local capture, bounded input, recording, tests and manual
 ├── gamemaster/tools/audit.luau   read-only Studio inventory and diagnostics
+<<<<<<< HEAD
 ├── tools/studio/             check_studio (static gate), run_digest, session_digest
+=======
+├── tools/
+│   ├── studio/               check_studio (static gate), run_digest, session_digest
+│   ├── assets/               Creator Store search, CC0 textures, concept → mesh → upload → insert
+│   └── check/                luau-lsp gate with Roblox types
+├── assets-library/           catalogued CC0 kits (KayKit, Quaternius) with thumbnails
+>>>>>>> harness-local
 ├── artifacts/                demo build: .rbxl, images, verification record, README
 ├── docs/                     architecture, development guide, studio journal and problem inventory, examples
 ├── tests/                    isolated launcher, Stop-hook and studio-tool fixtures
@@ -304,7 +312,11 @@ The launcher suite runs against a fake Codex in isolated workspaces; the player 
 
 **v0.2.0.** The studio's craft and pipeline were rebuilt for AAA-scale fantasy work: art direction with a style kit, one builder per zone, effects owned end to end, set pieces delivered as clips. The first build on this version is still to be run.
 
+<<<<<<< HEAD
 **v0.2.1.** The studio can now work on itself: `studio-developer` diagnoses a run from its reports and session trajectories and rewrites the role, skill or tool that produced a weak result, with a fresh instance auditing the change; `tools/studio/` makes runs readable and gates the studio's consistency. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+=======
+**v0.2.1.** The studio can now work on itself: `studio-developer` diagnoses a run from its reports and session trajectories and rewrites the role, skill or tool that produced a weak result, with a fresh instance auditing the change; `tools/studio/` makes runs readable and gates the studio's consistency. The asset tools, the CC0 library and the Luau gate give roles real meshes, materials and a code check. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+>>>>>>> harness-local
 
 **Not yet claimed.** Other genres, blind visual discovery, reset and death handling, multiplayer and mobile, adversarial remotes, publication and ordinary-player joining each need their own build and evidence before they appear here as supported. Referenced Roblox assets keep their own permissions; see [referenced content](artifacts/README.md#referenced-roblox-content).
 

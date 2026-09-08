@@ -135,8 +135,8 @@ then one final end-to-end acceptance.
    palette, material language, silhouette, scale and depth, visual storytelling, lighting mood,
    and the STYLE KIT: the actual meshes, materials, generated models and Creator Store assets
    the builders will use, found and loaded through the tools, with provenance, placed in
-   `ServerStorage.StyleKit`. Names the acceptance views with camera positions and captures the
-   before frames. Nothing is built at full quality before this exists.
+   `ServerStorage.StyleKit`. Names the acceptance views with camera positions, captures the before
+   frames and produces a concept frame per view that builders match. Nothing is built at full quality before this exists.
 3. **Systems and blockout in parallel** under EDIT_SHARED with disjoint ownership:
    `luau-scripter` for game systems; one `world-builder` per zone for a playable blockout;
    `enemy-designer` when the concept has threats, so the first playable already has them.
@@ -214,9 +214,11 @@ Hand interfaces forward explicitly: the briefs to `vfx-designer`, `sound-designe
 from `enemy-designer`;
 the brief to `luau-reviewer` carries every `CODE CHANGED:` path from every role that wrote code.
 Captures are named by view name plus the stage that took them (direction, environment,
-lighting, review, showcase); nobody overwrites a capture another stage took. The brief to
-`art-director` REVIEW carries only the before and after captures of the acceptance views and
-one line per target; never the direction document, the architecture or build reports, because
+lighting, review, showcase); nobody overwrites a capture another stage took. Builders and the
+lighting director receive the concept frame of each acceptance view alongside the view itself and
+work until the capture matches it. The brief to `art-director` REVIEW carries only the before and
+after captures of the acceptance views, the concept frames they were built toward, and one line
+per target; never the direction document, the architecture or build reports, because
 a judge given prose about a scene starts believing the prose instead of the frame. Briefs to
 builders name the kit container `ServerStorage.StyleKit` and the zone's acceptance views.
 
@@ -258,7 +260,11 @@ it is for by arrangement; a route that reads without HUD; nothing that reads as 
 primitive. Counts of parts, lights or emitters are inventory, never quality. Motion (cues,
 reveals, animation) is judged from clips or timed frame sequences, not stills.
 
-**Assets.** The style kit is chosen once, by the art director, before finish work, and reused:
+**Assets.** The studio has shell tools for real assets: `tools/assets/` (Creator Store search with
+triangle counts and script flags, CC0 PBR textures and skyboxes, concept image to mesh through Tripo,
+optimisation, Open Cloud upload, the Studio insert snippet) and `assets-library/` (catalogued CC0 kits
+with thumbnails). The art director's DIRECTION uses them to build the kit; a builder uses them for a
+piece the kit lacks. The style kit is chosen once, by the art director, before finish work, and reused:
 many instances of one good tree beat many different trees. Every asset records source, permitted
 use, load status, scale and collision. Generated meshes serve hero props and one-offs; kits and
 materials carry the world. Scripts inside inserted Creator Store models stay disabled until

@@ -29,7 +29,11 @@ python -m venv .venv-wgc
 
 ## What is tracked
 
+<<<<<<< HEAD
 Source: `AGENTS.md`, `.codex/agents/`, `.codex/config.toml`, `.codex/hooks.json`, `scripts/`, `gamemaster/tools/`, `tools/`, `tests/`, `docs/`, `artifacts/`. Everything else under `gamemaster/` (concept, state, bug list, inbox, logs, reports) is runtime data and stays ignored, as do `.env` files and any personal Codex profile. Large videos are release assets, not tracked files.
+=======
+Source: `AGENTS.md`, `.codex/agents/`, `.codex/config.toml`, `.codex/hooks.json`, `scripts/`, `gamemaster/tools/`, `tools/`, `assets-library/`, `tests/`, `docs/`, `artifacts/`. Tool binaries (`tools/check/luau-lsp*`, type definitions) and generated asset work (`assets-work/`) are ignored. Everything else under `gamemaster/` (concept, state, bug list, inbox, logs, reports) is runtime data and stays ignored, as do `.env` files and any personal Codex profile. Large videos are release assets, not tracked files.
+>>>>>>> harness-local
 
 ## Hooks
 

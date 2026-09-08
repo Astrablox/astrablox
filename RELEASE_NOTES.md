@@ -8,8 +8,14 @@ v0.2.0 gave every role its craft. v0.2.1 adds the role that keeps the roles hone
 - Mode `IMPROVE` in the launcher and the producer contract; studio feedback as an inbox class; the route producer → FIX → fresh AUDIT → one return.
 - `tools/studio/`: `check_studio.py` (static gate: roles, registrations, markers, skills, references, the AGENTS.md cap), `run_digest.py` (a cycle's reports against the markers the producer expects, verdicts, missing evidence), `session_digest.py` (Codex session JSONL as readable trajectories: tool sequences, errors, spawned roles).
 - `docs/journal.md` and `docs/inventory.md`: every change to the studio with its reason and how to verify it; every known problem with its fate.
+<<<<<<< HEAD
 
 Static gate, launcher fixtures and studio-tool fixtures pass. The first IMPROVE run is still to be made; nothing here claims a visual result yet.
+=======
+- Asset harness from the same week: `tools/assets/` (Creator Store search with triangle counts and script flags, CC0 PBR textures and skyboxes, concept image → mesh through Tripo → optimise → Open Cloud upload → Studio insert, batch kit upload and manifest, headless Blender conversion), `assets-library/` (1290 catalogued CC0 assets from KayKit and Quaternius with thumbnails), `tools/check/` (luau-lsp gate with Roblox types), a vendored API reference; skills and four roles point to them; builders and the lighting director now work toward concept frames of each acceptance view.
+
+Static gate, launcher fixtures and studio-tool fixtures pass. Live API calls of the asset tools and the first IMPROVE run are still to be made; nothing here claims a visual result yet.
+>>>>>>> harness-local
 
 # v0.2.0 — Craft, direction and set pieces
 

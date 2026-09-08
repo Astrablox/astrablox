@@ -229,6 +229,33 @@ not exist yet, name the hook and report it; do not silently drop the layer or gr
 asset. Cap simultaneous identical hit sounds — stacked copies of one impact sound read as
 distortion, not power.
 
+## 8b. Libraries to put in the kit instead of building from nothing
+
+Open-source and cheap building blocks that VFX artists on the platform actually use in 2026. Bring them
+into `ServerStorage.StyleKit/VFX` once (Creator Store ids through `insert_asset`, GitHub modules through
+the code owner) and reference them from cues; do not re-author a lightning bolt or a camera shaker.
+
+- **Effect Designer Suite** (iGottic, 2026-07, open source): emit-property editor, bezier/tween animator
+  for parts and meshes, and a library of roughly seven thousand open-source flipbooks and particle
+  textures in a standard effect format with a runtime player (`miagobble/effect-player`, wally/pesde).
+  The first place to look for a texture. DevForum topic 4754553.
+- **Lightning Beams** (Quasiduck, MIT, `github.com/SamyBlue/Lightning-Beams`): LightningBolt with perlin
+  noise and bezier control, sparks and explosion helpers; the storm-dragon arcs come from here.
+- **VSV** (Creator Store 118384350930474, open source): voxelizes a mesh into particles with noise
+  dissolve; deaths, portals, transformations.
+- **Open-Source Mesh Flipbook Pack** (DevForum 3635032): smoke ball, dissolve, shockwave meshes; the
+  reference format for mesh flipbooks.
+- **GG Camera Shake** (MIT, wally `hysteriabee/gg-camerashake`): kick, perlin and bounce shakes with
+  direction and presets; or Sleitnick's RbxCameraShaker.
+- **Refx** (wally / `@rbxts/refx`): replicate cues to clients without server-side instancing.
+- **VFX Editor** (VirtualButFake, MIT, Creator Store 18800449515): bezier NumberSequence editor and a
+  texture store with flipbooks; a GUI tool, useful as a source of curves and textures.
+- **Sine VFX** (Creator Store 96645663824840, $5): about fourteen thousand textures, beams, meshes,
+  mesh flipbooks and sounds; the licence of the bundled assets is not stated by the author, so ask
+  before shipping a game with them.
+- Hitstop and impact frames have no library worth taking; they are twenty lines of client code
+  (Highlight + a client-side ColorCorrection instance + `AnimationTrack:AdjustSpeed(0)` for a few frames).
+
 ## 9. Tools
 
 - **Studio MCP** does the work: `execute_luau` to build and tune instances in batches,

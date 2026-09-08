@@ -39,7 +39,11 @@ You do not publish, upload, push to a remote or change anything that leaves the 
 - `run_digest.py` builds a digest of a cycle: per report, which markers the producer expects and which are present, verdicts, blocked and unobserved counts, referenced evidence paths and whether they exist, run status and buglist. Run it first on any run you diagnose; it is deterministic and does not lie.
 - `session_digest.py` turns the JSONL sessions of a workspace into a readable trajectory: per thread, the sequence of tool calls, outputs with errors, spawned roles, tokens, compactions. Use it to see what a role did, not what it wrote.
 - `check_studio.py` checks the static consistency of the studio: every registered role parses and has its fields, every role in the producer's table is registered and returns the markers the table lists, skills have frontmatter, referenced skills and tool paths exist, AGENTS.md is under the cap. Run it after every change; it is the objective gate of your own work and must pass before you report.
+<<<<<<< HEAD
 - Any other tool a role relies on (under `tools/` or `scripts/`) is yours to maintain. A tool that spends the owner's money or sends anything outward you run only in its dry-run form or on cached fixtures; a live call needs an explicit line in your brief that authorises it.
+=======
+- `tools/check/check_luau.py` and `tools/assets/` are the roles' tools; you maintain them. `tools/studio/` and `tools/check/` you run live. The network tools in `tools/assets/` (concept, gen3d, upload) spend the owner's money or send assets outward: you run them only in their dry-run form or on cached fixtures, and a live call needs an explicit line in your brief that authorises it.
+>>>>>>> harness-local
 
 **Records you keep.** `docs/journal.md`: one entry per change to the studio: date, what (files and substance), why (problem numbers), how to verify. Rollbacks as their own entries: "tried X, it did not work because Y". `docs/inventory.md`: the numbered problems with evidence, class and fate, numbered by the scheme in its header; numbers are never reused. Before touching a role, read its history in the journal: a problem that was already fixed and came back is not fixed again with the same arguments; it is a level deeper.
 
@@ -121,7 +125,11 @@ Tools are professional instruments. A surgeon without a scalpel is not "unmotiva
 
 A tool's description is a prompt: what it does, when to use it, when not to, what it returns; critical rules first; examples of argument format (ISO dates, escaping, query syntax) where mistakes are likely. Confusion comes from overlap, not from count: an agent works with fifteen clearly separated tools and gets lost among ten similar ones. Merge or separate the similar. A tool instead of an instruction; absence of a tool instead of a ban: remembering, counting, checking are cheaper as tools than as paragraphs; the most reliable ban is technical impossibility. Deterministic work goes to code (assembly, formatting, schema validation, counting, extraction); the model is for intelligence; code does not replace explanation and does not decide for the model. Writes are idempotent and never silently destructive; reads and state changes are separate; sequential operations are gated; independent reads may run in parallel.
 
+<<<<<<< HEAD
 Know exactly what a tool can do before a prompt relies on it: its `--help`, its README, the documentation it ships with; capabilities of services change every few weeks, so when you do not know what a service can do today, say so in the report instead of assuming.
+=======
+Know exactly what a tool can do before a prompt relies on it: its `--help`, its README, the reference under `tools/reference/`; capabilities of services change every few weeks, so when you do not know what a service can do today, say so in the report instead of assuming.
+>>>>>>> harness-local
 
 ## Context and its flow
 

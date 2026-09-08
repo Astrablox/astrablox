@@ -34,7 +34,7 @@ Models do not use a library they were merely given access to; using the kit has 
 | `generate_material` | surface language: tiling PBR sets with normal and roughness | precise art-directed detail on a specific object |
 | Procedural models (`generate_procedural_model`, `ProceduralModel`) | repeated parametric structure: stairs, walls, fences, towers, bridges | organic shapes, hero silhouettes |
 | EditableMesh + `CreateDataModelContentAsync` | procedural geometry and textures written from code | anything achievable by placing existing pieces; it is expensive to author |
-| External CC0 packs through Open Cloud upload | a stylistically complete fantasy kit in one style | currently unavailable to this agent; see the section below |
+| External CC0 packs through Open Cloud upload (`tools/assets/upload.py --batch`) | a stylistically complete fantasy kit in one style | needs `ROBLOX_API_KEY`; placement still happens in Studio |
 
 ### Creator Store
 
@@ -81,13 +81,25 @@ Keep generators out of the shipped world when they are not needed at runtime: ba
 
 Limits to plan around: eight `EditableMesh` objects per client, server-side content up to two hundred megabytes, and the batching APIs that make large edits fast are still a Studio beta. Skinning is not supported through batching. Treat this as a specialist tool for a specific need, not a default.
 
-### External CC0 packs — blocked, name it as a blocker
+### External CC0 packs and generated hero assets — through the shell tools
 
-The reliable route to a stylistically complete fantasy world is an external CC0 pack uploaded as your own assets: KayKit, Quaternius, Kenney for low-poly model packs, Poly Haven for textures and HDRIs. Check each pack's licence at its source before use; CC0 and permissive licences differ per author and per pack.
+The reliable route to a stylistically complete fantasy world is an external CC0 kit uploaded as the studio's own
+assets, and the reliable route to a hero prop or a creature nobody sells is a concept image turned into a mesh.
+Both exist as shell tools in `tools/assets/` (read `tools/assets/README.md`):
 
-The upload path is the Open Cloud Assets API: `POST /assets/v1/assets` with an API key, asset types Model (`.fbx`, `.gltf`, `.glb`, `.rbxm`), Image (`.png`, `.jpg`, up to 8000 px), Audio (up to seven minutes, monthly quota), Animation; twenty megabytes per call; the response is an operation you poll for the asset id; everything passes moderation with a delay.
+- `assets-library/INDEX.md` and `catalog.json`: CC0 kits already catalogued with triangle counts, animations and
+  thumbnails (KayKit dungeon, characters, skeletons, medieval hexagon; Quaternius fantasy packs). Pick a family
+  from here first; it is a kit by construction.
+- `store_search.py`: Creator Store search with triangles, scripts, votes and price per result.
+- `textures.py`: CC0 PBR sets (Poly Haven, ambientCG) as the maps Roblox wants, and HDRI skyboxes.
+- `concept.py` + `gen3d.py` (Tripo P1, `--rig` for creatures) + `optimize.py`: concept -> mesh -> Roblox-ready GLB.
+- `upload.py`: Open Cloud upload, single file or a whole catalog; returns asset ids with provenance.
+- `insert.luau`: the Studio MCP snippet that brings an uploaded asset into `ServerStorage.StyleKit`.
 
-**This requires an API key and shell access that the Studio MCP session does not have.** Do not try to work around it and do not silently substitute a worse-looking source when a direction depends on this path. Report it as a named blocker with what the alternative would cost visually, so the harness can be extended.
+The tools need API keys in the environment (`ROBLOX_API_KEY`, `TRIPO_API_KEY`, `OPENAI_API_KEY`); without them
+they run dry and say so. A dry run is not an asset: report the missing key as the blocker, name what the
+fallback loses, and do not substitute a cheaper look silently. Check each pack's licence at its source (KayKit
+and Kenney are CC0; Quaternius has its own free licence that forbids reselling the assets themselves).
 
 ## Verifying an asset
 
