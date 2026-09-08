@@ -11,11 +11,12 @@
 .EXAMPLE
   .\scripts\run.ps1 -Mode BUILD -Objective "Build and verify the owner-selected bounded feature" -MaxMinutes 90 -ClearStop
   .\scripts\run.ps1 -Headless -Resume -MaxContinues 4 -MaxMinutes 30
+  .\scripts\run.ps1 -Mode IMPROVE -Objective "world-builder reports WORLD BUILT but captures show blockout; see cycle-004" -MaxMinutes 60
   .\scripts\run.ps1 -Resume -SessionId "00000000-0000-0000-0000-000000000001"
 #>
 [CmdletBinding()]
 param(
-    [ValidateSet("PLAN", "BUILD", "PLAY", "REVIEW")][string]$Mode = "BUILD",
+    [ValidateSet("PLAN", "BUILD", "PLAY", "REVIEW", "IMPROVE")][string]$Mode = "BUILD",
     [string]$Objective = "",
     [string]$Concept = "",
     [ValidateRange(0, 1000)][int]$MaxContinues = 12,
@@ -145,6 +146,7 @@ try {
     Set-Location -LiteralPath $root
     $prompt = "AstraBlox bounded run $runId. Mode: $Mode. Objective: $Objective. Read AGENTS.md and gamemaster/run.json plus relevant checkpoint files. Deadline UTC: $($runRecord.deadline_utc). Respect the exclusive Studio Play/input/camera lease after all Edit builders finish. Complete only this authorized task. Set run status complete when acceptance is met, or blocked with exact evidence when an external dependency prevents progress; release Studio/input and finish. Do not extend the budget or invent another roadmap task."
     if ($Concept) { $prompt += "`nConcept:`n$Concept" }
+    if ($Mode -eq "IMPROVE") { $prompt += " This run improves the studio itself, not the game: follow the Studio improvement route in AGENTS.md (studio-developer FIX, then a fresh studio-developer AUDIT); Studio may be closed; do not commit or push." }
     $codexArgs = @()
     if ($Headless) {
         $codexArgs += "exec"

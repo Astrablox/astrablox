@@ -54,6 +54,15 @@ class HookTests(unittest.TestCase):
         self.assertFalse((self.gm / "RUN").exists())
         self.assertEqual(hook.read_json(self.gm / "session.json")["session_id"], SESSION)
 
+    def test_improve_mode_continues_like_build(self):
+        self.run["mode"] = "IMPROVE"
+        self.save()
+        self.assertEqual(self.call()["decision"], "block")
+        self.run["mode"] = "DEPLOY"
+        self.save()
+        self.assertIsNone(self.call())
+        self.assertFalse((self.gm / "RUN").exists())
+
     def test_zero_budget_initial_turn_only(self):
         self.run["max_continues"] = 0
         self.save()
