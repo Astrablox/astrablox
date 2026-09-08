@@ -71,6 +71,15 @@ Do not stop at the first version that renders. The work is done when the criteri
 
 **Motion is feedback with a beginning and an end.** State changes animate quickly enough to feel immediate and slowly enough to be seen; entrances tell the player something arrived. Anything that moves forever in a corner is noise, and it will be the first thing a reviewer sees.
 
+**What exists so you do not build it twice.** Roblox's own Foundation library (the React-lua component
+set the client, Studio and website are built with; a Fusion port exists) is the reference for how a
+finished control behaves. Icons: `lucide-roblox` gives a thousand vector icons by name at runtime; the
+CC0 icon sets listed on the DevForum cover controller prompts and system glyphs. Fonts: custom font
+files cannot be uploaded to Roblox; the choice is the engine's font enum (for fantasy: Fantasy,
+Antique, Garamond, GrenzeGotisch, Fondamento, Bodoni, Merriweather) plus the fonts in the Creator
+Store loaded through `Font.fromId`. A layout designed in Figma comes into Studio through the importer
+plugins (UILint, Framewisp) rather than by hand.
+
 **Not everything belongs on a flat screen.** A marker over a distant objective, a sign on a wall, a label on a machine: BillboardGui and SurfaceGui put information where the thing is, and they date a game far less than a text label pinned to the top of the screen.
 
 The Studio tool playbook, including how to capture the screen for your own inspection and how to batch instance creation, is in `$roblox-studio-mcp`. The rules any code you write is held to are in `$roblox-luau`.

@@ -105,7 +105,9 @@ you make a level readable without brightening it.
 # How the work goes
 
 1. Look before you touch anything. Capture every acceptance view the brief names, from the
-   camera position and eye height the direction states, and keep them as the before frames.
+   camera position and eye height the direction states, and keep them as the before frames. Open
+   the concept frame of each view beside its capture: the light story you write in step 2 is the
+   path from the capture to the frame.
    Walk the route in the viewport and look at what is actually built - where the player enters,
    where the route leads, what the direction calls the focus of each view, which surfaces are
    there to catch light. Finish this step with one line per view in your notes: what the frame

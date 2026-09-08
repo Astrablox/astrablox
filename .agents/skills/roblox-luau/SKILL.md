@@ -9,6 +9,14 @@ Read the section you need; the file is a reference, not a procedure. Two rules g
 
 **Check the API before you write it.** Model memory of Roblox APIs is a year or two stale and the engine changed a lot in 2026. If a class, method or property is going into code or into a review finding and you are not certain it exists with that exact name today, look it up in the engine reference or inspect the live class through the Studio tools first. A misremembered API costs a whole fix round.
 
+**Two things outside this file that you use every time.** `tools/check/check_luau.py <files>` runs
+luau-lsp with the Roblox global types and lists unknown API members, type errors and deprecated calls
+with file:line; run it on every script before reporting, and read its output as the first evidence
+in a review (sources come out of Studio through Script Sync, a Rojo project or an MCP export).
+`tools/reference/roblox-dev-skill/references/*.md` is an externally maintained reference tracked
+against each weekly Studio release (networking, security, persistence, performance, UI, MCP, legacy
+migration, file formats); open the file for the area you are working in when an API detail matters.
+
 **Every fact here is from documentation and release notes, not from a run in this project.** Lines marked `VERIFY ON FIRST RUN` were not confirmed against a live Studio in this harness; confirm them the first time they matter and record the result.
 
 ## Non-negotiables

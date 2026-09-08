@@ -24,3 +24,8 @@ scripts/player/.runtime/
 # Reviewed large media belongs in separately selected release assets.
 *.mp4
 dist/
+# Tool binaries and generated asset work are not source
+tools/check/luau-lsp
+tools/check/luau-lsp.exe
+tools/check/globalTypes*.d.luau
+assets-work/

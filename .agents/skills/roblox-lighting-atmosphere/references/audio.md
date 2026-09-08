@@ -149,3 +149,21 @@ words for a reason, and a mix signed off from a properties table reaches the pla
   https://create.roblox.com/docs/cloud/guides/usage-assets
 - Frontlines interview (six months on weapon audio; small details add up):
   https://about.roblox.com/newsroom/2026/07/roblox-studio-fidelity-creator-interviews-twin-atlas-fluorlite-maximillian-ecos
+
+
+## Sources of sound the studio can call from a script
+
+- **ElevenLabs Sound Effects API** (`POST /v1/sound-generation`, model `eleven_text_to_sound_v2`,
+  0.5–30 s, `loop`, `prompt_influence`, WAV 48 kHz) and **Eleven Music** (`POST /v1/music`,
+  `music_length_ms` up to ten minutes, `composition_plan` by sections, `force_instrumental`). Commercial
+  use starts with the Starter plan; API billing about $0.12/min for effects and $0.15/min for music.
+  Some plans ask for a credit line; read the music terms before release.
+- **Roblox audio library and Too Lost catalogue** in the Creator Store: free, licensed only inside Roblox
+  (not for trailers on YouTube), searchable with duration filters.
+- Upload route matters: Open Cloud allows 100 audio uploads a month on an ID-verified account; Studio's
+  own uploader allows 2000 per 30 days. Bulk sound goes through Studio.
+- **AudioEngine** (`github.com/gmoddev/AudioEngine`, MIT, 2026-08): adaptive music from synchronised
+  stems with state and parameter rules, buses with ducking, ambience emitters, voice budgets, on the
+  new Audio API. New and unproven; architecturally the right shape for a boss fight.
+- **Resonance** (Creator Store 107564850777477): one-object wrapper over the new Audio API with falloff
+  curves and a spectrum analyser.
