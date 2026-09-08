@@ -1,5 +1,5 @@
 """Board tools on a temporary copy of board/: board.py new/claim/done/next/return/report-check/signal,
-supervisor --once reopening an overdue task, build_publish creating builds/<n>/ with CHANGES.md.
+scene claims for parallel instances, build_publish creating builds/<n>/ with CHANGES.md.
 No codex binary is needed (signals log with NOQUEUE or --dry-run).
 Run: python -B tests/test_board_tools.py
 """
@@ -16,7 +16,6 @@ import unittest
 sys.dont_write_bytecode = True
 ROOT = pathlib.Path(__file__).resolve().parents[1]
 BOARD = ROOT / "tools/board/board.py"
-SUPERVISOR = ROOT / "tools/board/supervisor.py"
 PUBLISH = ROOT / "tools/board/build_publish.py"
 
 
@@ -34,7 +33,7 @@ class TempStudio(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp(prefix="astra-board-")
         self.root = pathlib.Path(self.tmp)
-        shutil.copytree(ROOT / "board", self.root / "board", ignore=shutil.ignore_patterns("tasks", "reports", "heartbeats", "*.log"))
+        shutil.copytree(ROOT / "board", self.root / "board", ignore=shutil.ignore_patterns("tasks", "reports", "scenes", "*.log"))
         shutil.copytree(ROOT / "game", self.root / "game")
         (self.root / "assets/world/pier").mkdir(parents=True)
         (self.root / "assets/world/pier/pier.glb").write_bytes(b"glb")
@@ -83,7 +82,6 @@ class BoardTests(TempStudio):
         run(BOARD, "claim", tid, "--lane", "world", root=self.root)
         text = self.card(tid)
         self.assertIn("status: claimed", text); self.assertIn("claimed_by: world", text)
-        self.assertTrue((self.root / "board/heartbeats/world.json").exists())
         r = run(BOARD, "claim", tid, "--lane", "world", root=self.root, check=False)
         self.assertEqual(r.returncode, 1); self.assertIn("is claimed", r.stderr)
 
@@ -145,47 +143,19 @@ class BoardTests(TempStudio):
             run(BOARD, "signal", "--to", "lead", "BUILD 3 READY builds/003/", root=self.root)
             self.assertIn("[NOQUEUE]", (self.root / "board/queue.log").read_text(encoding="utf-8"))
 
-    def test_list_show_state_heartbeat(self):
-        tid = self.new()
-        self.assertIn("harbour", run(BOARD, "list", "--lane", "world", "--status", "open", root=self.root).stdout)
+    def test_list_show_state_and_scene_claims(self):
+        tid = run(BOARD, "new", "--lane", "vfx", "--scene", "pier", "--goal", "sparks", root=self.root).stdout.strip()
+        self.assertIn(tid, run(BOARD, "list", "--lane", "vfx", root=self.root).stdout)
         self.assertIn("## Goal", run(BOARD, "show", tid, root=self.root).stdout)
-        self.assertIn("Studio state", run(BOARD, "state", root=self.root).stdout)
-        run(BOARD, "heartbeat", "--session", "vfx", "--task", tid, root=self.root)
-        hb = json.loads((self.root / "board/heartbeats/vfx.json").read_text(encoding="utf-8"))
-        self.assertEqual((hb["session"], hb["task"]), ("vfx", tid)); self.assertIn("T", hb["time"])
-
-
-class SupervisorTests(TempStudio):
-    def test_once_reopens_overdue_and_wakes(self):
-        run(BOARD, "new", "--lane", "world", "--scene", "harbour", "--goal", "x", root=self.root)
-        run(BOARD, "claim", "001", "--lane", "world", "--hours", "0", root=self.root)
-        old = (dt.datetime.now(dt.timezone.utc) - dt.timedelta(hours=9)).replace(microsecond=0).isoformat().replace("+00:00", "Z")
-        p = self.root / "board/tasks/001.md"
-        lines = [f"claimed_at: {old}" if l.startswith("claimed_at:") else l for l in p.read_text(encoding="utf-8").splitlines()]
-        p.write_text("\n".join(lines) + "\n", encoding="utf-8")
-        hb = self.root / "board/heartbeats/world.json"
-        hb.write_text(json.dumps({"session": "world", "time": old, "task": "001"}), encoding="utf-8")
-        run(BOARD, "new", "--lane", "vfx", "--scene", "harbour", "--goal", "y", root=self.root)  # vfx has no heartbeat at all
-        r = run(SUPERVISOR, "--once", "--task-hours", "4", "--stale", "15", root=self.root)
-        res = json.loads(r.stdout.strip().splitlines()[-1])
-        self.assertEqual(res["reopened"], ["001"])
-        self.assertIn("vfx", res["missing"]); self.assertIn("codex --session-name vfx", r.stdout)
-        text = p.read_text(encoding="utf-8")
-        self.assertIn("status: open", text); self.assertIn("claimed_by: \n", text); self.assertIn("supervisor: returned to open", text.split("## Notes")[1])
-        self.assertTrue((self.root / "board/supervisor.log").exists())
-        # second pass: the reopened world task + stale heartbeat -> WAKE world
-        r = run(SUPERVISOR, "--once", root=self.root)
-        res = json.loads(r.stdout.strip().splitlines()[-1])
-        self.assertIn("world", res["woke"])
-        self.assertIn("to=world WAKE", (self.root / "board/queue.log").read_text(encoding="utf-8"))
-
-    def test_stop_file(self):
-        (self.root / "STOP").write_text("stop", encoding="utf-8")
-        r = run(SUPERVISOR, "--once", root=self.root)
-        res = json.loads(r.stdout.strip().splitlines()[-1])
-        self.assertTrue(res["stopped"])
-        log = (self.root / "board/queue.log").read_text(encoding="utf-8")
-        self.assertIn("to=lead STOP", log); self.assertIn("to=dev STOP", log)
+        self.assertEqual(run(BOARD, "state", root=self.root).returncode, 0)
+        r = run(BOARD, "claim-scene", "pier", "--by", "instance-a", root=self.root)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        r = run(BOARD, "claim-scene", "pier", "--by", "instance-b", root=self.root, check=False)
+        self.assertNotEqual(r.returncode, 0); self.assertIn("held by instance-a", r.stderr)
+        self.assertEqual(run(BOARD, "claim-scene", "pier", "--by", "instance-a", root=self.root).returncode, 0)
+        self.assertIn("claimed", run(BOARD, "scenes", root=self.root).stdout)
+        self.assertEqual(run(BOARD, "release-scene", "pier", "--accepted", root=self.root).returncode, 0)
+        self.assertNotEqual(run(BOARD, "claim-scene", "pier", "--by", "instance-b", root=self.root, check=False).returncode, 0)
 
 
 class BuildPublishTests(TempStudio):

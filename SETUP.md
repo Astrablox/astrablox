@@ -12,7 +12,7 @@ codex --version      # 0.153 or newer; codex queue (the bus between lanes) needs
 
 ## 2. Blender 4.x
 
-Install from blender.org. Lanes model through the Blender MCP your Codex session has, or through bpy scripts; either way the toolkit's gates run headlessly: `python tools/blender/blender.py` finds Blender on PATH or in the standard install folder; otherwise set `BLENDER=<path to blender.exe>`.
+Install from blender.org. Lanes model through the Blender MCP your Codex session has, or through bpy scripts they write; Blender must be on PATH or reachable by the MCP.
 
 ## 3. Roblox Studio
 
@@ -40,13 +40,13 @@ cd astrablox
 .\scripts\run_studio.ps1
 ```
 
-One terminal per lane opens (`codex --session-name <lane>`): ten named Codex sessions that talk over `codex queue`. Add `-Supervisor` for the watchdog when the studio runs unattended; `-Lanes lead,story,design,world,code` for a smaller first run. Say yes to trusting the folder in each: trust loads `.codex/config.toml`. The lead starts the first scene. Watch `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/`.
+One window opens per instance (`codex --session-name lead-<n>`): the lead with the lanes as its subagents. `-Instances 3` opens three, each claiming a different scene from `game/PLAN.md`. Say yes to trusting the folder in each: trust loads `.codex/config.toml`. The lead starts the first scene. Watch `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/`.
 
-Talk to the lead while it runs: `codex queue --session lead "Latest owner instruction: ..."`. Stop everything: `.\scripts\run_studio.ps1 -Stop` (writes `STOP`; every lane finishes its card and halts). A subset: `.\scripts\run_studio.ps1 -Lanes lead,world,story`.
+Talk to an instance while it runs: `codex queue --session lead-1 "Latest owner instruction: ..."`. Stop everything: `.\scripts\run_studio.ps1 -Stop` (writes `STOP`; every instance halts after its current step).
 
 ## If Studio does not connect
 
 - Start Codex before you open Studio: Studio attaches to the MCP proxy only if it is already running.
 - The place must be published.
 - One Studio window with MCP enabled at a time.
-- `list the Roblox Studios you can see` in the `studio` session answers with the open place and its id.
+- `list the Roblox Studios you can see` in the instance answers with the open place and its id.

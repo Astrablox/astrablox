@@ -4,7 +4,7 @@ look at one numbered folder instead of hunting renders across work dirs (docs/co
 
 What it does: takes the next build number, copies the renders, the target frame, optional Studio
 captures and .rbxl into builds/<n>/, writes one side-by-side PNG per render against the target
-(tools/blender/side_by_side.py), writes CHANGES.md (number, scene, time, what changed, where to look,
+(Pillow, inline), writes CHANGES.md (number, scene, time, what changed, where to look,
 file list) and, when game/scenes/<id>/card.md exists, rewrites its `Current build:` line.
 Prints `BUILD <n> READY builds/<n>/` last; that line is the §3 signal text to send to the lead / studio.
 
@@ -28,9 +28,31 @@ HERE = pathlib.Path(__file__).resolve().parent
 _spec = importlib.util.spec_from_file_location("astra_board", HERE / "board.py")
 board = importlib.util.module_from_spec(_spec)
 _spec.loader.exec_module(board)
-_sbs_spec = importlib.util.spec_from_file_location("astra_sbs", HERE.parent / "blender" / "side_by_side.py")
-sbs = importlib.util.module_from_spec(_sbs_spec)
-_sbs_spec.loader.exec_module(sbs)
+
+
+def compose(left, right, out, labels=("Render", "Target"), height=900):
+    """Render beside target in one PNG with labels; returns 0, or 3 when Pillow is missing (no file written)."""
+    try:
+        from PIL import Image, ImageDraw
+    except ImportError:
+        print("SIDE_BY_SIDE skipped: Pillow not installed", file=sys.stderr)
+        return 3
+    if not pathlib.Path(right).exists():
+        return 2
+    imgs = []
+    for path in (left, right):
+        im = Image.open(path).convert("RGB")
+        im = im.resize((int(im.width * height / im.height), height))
+        imgs.append(im)
+    gap, top = 12, 28
+    canvas = Image.new("RGB", (imgs[0].width + gap + imgs[1].width, height + top), (18, 18, 20))
+    d = ImageDraw.Draw(canvas)
+    x = 0
+    for im, label in zip(imgs, labels):
+        canvas.paste(im, (x, top)); d.text((x + 6, 7), label, fill=(230, 230, 230)); x += im.width + gap
+    canvas.save(out)
+    print("SIDE_BY_SIDE", out)
+    return 0
 
 
 def next_build(builds):
@@ -86,7 +108,7 @@ def publish(root, scene, renders, target, changes, captures=None, rbxl=None):
     comparisons = []
     for r in sorted((folder / "renders").glob("*.png")):
         out = folder / f"side_by_side_{r.stem}.png"
-        if sbs.compose(str(r), str(folder / "target.png"), str(out), (f"Render {r.stem} (build {n})", "Target"), 900) == 0:
+        if compose(str(r), str(folder / "target.png"), str(out), (f"Render {r.stem} (build {n})", "Target"), 900) == 0:
             comparisons.append(out)
             files.append(out)
     rel = lambda p: p.relative_to(root).as_posix()

@@ -5,7 +5,7 @@ Usage:
   run_digest.py [--root <checkout>] [--scene <id>] [--out <file>]
 
 Reads board/tasks/*.md (front matter: id, lane, scene, status, claimed_by, ...), board/reports/<id>.md,
-board/heartbeats/*.json, board/queue.log, game/scenes/<id>/card.md and builds/*/CHANGES.md.
+board/scenes/*.json, board/queue.log, game/scenes/<id>/card.md and builds/*/CHANGES.md.
 For every report: the markers the lead expects for that lane (contract base markers plus the lane's
 extra markers from the AGENTS.md lane table) and which are missing, STATUS line, BLOCKED and RETURNED
 counts, every path the report references and whether it exists. Writes Markdown to
@@ -89,12 +89,12 @@ def main():
             for p in gone[:20]:
                 out.append(f"  - MISSING: {p}")
         out.append("")
-    hb = board / "heartbeats"
-    if hb.exists():
-        out.append("## Heartbeats")
-        for p in sorted(hb.glob("*.json")):
+    sc = board / "scenes"
+    if sc.exists():
+        out.append("## Scene claims")
+        for p in sorted(sc.glob("*.json")):
             try:
-                d = json.loads(p.read_text(encoding="utf-8")); out.append(f"- {d.get('session')}: {d.get('time')} task={d.get('task')}")
+                d = json.loads(p.read_text(encoding="utf-8")); out.append(f"- {d.get('scene')}: {d.get('status')} by {d.get('by', '')} since {d.get('since', '')}")
             except Exception:
                 out.append(f"- {p.name}: unreadable")
         out.append("")

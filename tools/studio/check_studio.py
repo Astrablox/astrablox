@@ -69,7 +69,7 @@ def role_table(agents_md: str) -> dict[str, list[str]]:
         if not inside or len(cells) != 4 or set(cells[0]) <= {"-"}:
             continue
         session = cells[1].strip("` ")
-        if session == "lead":
+        if session == "lead" or cells[0].lower() == "lead" or "session" in session:
             continue
         extra = []
         for alt in cells[3].split(" / "):

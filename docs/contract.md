@@ -10,11 +10,11 @@ The bar for every artifact: it would pass in a game a strong studio ships. A con
 
 ## 2. Processes and names
 
-Long-lived Codex sessions, one per lane, each started with `codex --session-name <lane>` in the checkout root (worktree per lane where it writes code). Session names are exactly:
+One studio instance is one Codex session: the lead (AGENTS.md) runs in it, and the lanes are the lead's subagents, spawned by name from `.codex/agents/<lane>.toml` with `spawn_agent`. A lane runs a task card and returns its report; it can spawn its own judges and workers (`agents.max_depth = 2` in `.codex/config.toml`). Several instances run in parallel as separate `codex` terminals: each claims a different scene from `game/PLAN.md` on the board and works it end to end with its own subagents; instances share nothing but the files and the board.
 
-| Lane | Session name | Owns |
+| Lane | Subagent name | Owns |
 |---|---|---|
-| Lead | `lead` | The scene: plan, concept frames, exemplar acceptance, assembly in Blender, builds, acceptance, dispatch to all lanes. Also builds world pieces itself when nobody else is faster. |
+| Lead | (the session) | The scene: plan, concept frames, exemplar acceptance, assembly in Blender, builds, acceptance, dispatch to all lanes. Also builds world pieces itself when nobody else is faster. |
 | World | `world` | Kit pieces, hero structures, terrain, vegetation, Blender lighting matched to the target frame; GLB export. |
 | Creatures | `creatures` | Player character parts, NPC and monster models, rigs (R15 / Avatar Auto Setup), animations (retargeted or authored), accessories. |
 | Effects | `vfx` | Mesh effects and flipbooks in Blender; particles, beams, camera shake, hitstop, impact frames and the client presentation code in Roblox. |
@@ -26,22 +26,13 @@ Long-lived Codex sessions, one per lane, each started with `codex --session-name
 | Audio | `audio` | Sound effects, ambiences, music and adaptive layers from open sources and local generation; objective audio gates; the audio catalog. |
 | Dev | `dev` | `studio-developer`: after each accepted scene, reads the scene's retro, digests and trajectories and fixes lane files, skills and tools; a fresh instance audits every change. |
 
-Inside any session, subagents (depth 1) are used for exactly two things: fresh-context judges, and parallel workers on independent pieces. A subagent never owns a lane.
+Judges (`luau-reviewer`, `computer-player`, and the fresh judges the lane files describe) are subagents spawned by a lane or by the lead; they see only the artifact and the target, never the author's reasoning.
 
 ## 3. The bus
 
-Sessions signal each other only with `codex queue --session <name> "<signal>"`. A signal is one line, carries no content, and always names a file:
+Inside an instance the lead spawns a lane with the path of its task card and receives the lane's report as the subagent's result; the report is also written to `board/reports/<id>.md`, because files are the truth and the next instance or the `dev` lane must be able to read it. Between instances nothing is sent: an instance claims a scene on the board (`board.py claim-scene <id>`), works it, and releases it; another instance sees the state in the files. `codex queue --session <name> "<one line naming a file>"` is available for the owner to steer a running instance (`codex --session-name <name>` when starting it) and for an instance to nudge another; it is never a channel for content.
 
-- `TASK <id> DONE <path to report>`
-- `TASK <id> BLOCKED <path to report>`
-- `TASK <id> RETURNED <path to report>` (lead → lane, one round)
-- `TASK <id> OPEN <path to task>` (lead → lane: a new task for you)
-- `BUILD <n> READY builds/<n>/`
-- `SCENE <id> ACCEPTED` / `SCENE <id> BLOCKED <path>`
-- `RETRO <scene id> READY studio/scenes/<id>/retro.md` (dev)
-- `WAKE` (supervisor → any idle session with open tasks)
-
-Everything else is in files. A session that receives a signal reads the file it names before acting. The supervisor appends every signal to `board/queue.log`.
+Signals, when used, are one line and name a file: `TASK <id> DONE <path>`, `TASK <id> BLOCKED <path>`, `BUILD <n> READY builds/<n>/`, `SCENE <id> ACCEPTED`, `STOP`. `board.py signal` appends every signal to `board/queue.log`.
 
 ## 4. Task cards
 
@@ -112,16 +103,25 @@ builds/<n>/           renders, side-by-side, Studio captures, .rbxl, CHANGES.md 
 studio/journal.md     every change to the studio: date, what, why, how to verify   dev
 studio/inventory.md   numbered problems and fates                                    dev
 studio/scenes/<id>/retro.md   what worked and what did not in this scene             dev
-tools/                blender/ (render_views, bake_pbr, export_glb, side_by_side), board/ (board.py, supervisor.py, build_publish.py), assets/, check/, studio/, audio/
+tools/                board/ (board.py, build_publish.py), assets/, check/, studio/, audio/, story/, design/
 .agents/skills/       concept-frames, blender-craft, narrative-witcher, ui-premium, audio-pipeline, roblox-*
 .codex/agents/        one TOML per lane except lead (AGENTS.md)
 ```
 
-Code lives in `game/src/{server,client,shared,tests}` with `.server.luau` / `.client.luau` / `.luau` suffixes (the analyzer needs them). Two modules are mandatory declarations: `game/src/shared/Presentation.luau` (every presentation event with its payload type; `vfx`, `ui` and `audio` require it, so a name cannot drift) and `game/src/shared/Tuning.luau` (every value the design spec names, under the design's names, so tuning never hides inside a system). The Blender assembly of a build is exported as `builds/<n>/layout.json` in the schema `tools/blender/README.md` documents (pieces with transforms in metres, Y-up, and the acceptance cameras); `studio` reproduces it. The audio lane delivers a scene's package as `assets/audio/<scene>/placement.json`.
+Code lives in `game/src/{server,client,shared,tests}` with `.server.luau` / `.client.luau` / `.luau` suffixes (the analyzer needs them). Two modules are mandatory declarations: `game/src/shared/Presentation.luau` (every presentation event with its payload type; `vfx`, `ui` and `audio` require it, so a name cannot drift) and `game/src/shared/Tuning.luau` (every value the design spec names, under the design's names, so tuning never hides inside a system). The Blender assembly of a build is exported as `builds/<n>/layout.json` in the schema below; `studio` reproduces it. The audio lane delivers a scene's package as `assets/audio/<scene>/placement.json`.
 
-Judge subagents that lanes spawn by name are registered in `.codex/config.toml` with a description that begins with `Judge subagent:`; they are not lanes and have no session: `luau-reviewer` (spawned by `code`), `computer-player` (spawned by `studio`).
+`layout.json` schema (written by the lead's assembly, read by `studio`):
+```
+{ "scene": "<id>", "build": <n>, "units": "metres", "up": "Y", "studs_per_metre": 3.5714,
+  "pieces": [ { "name", "asset": "assets/<lane>/<name>/", "glb": "<path>", "parent": "Workspace.Scene.<scene>.<group>",
+                "position": [x,y,z], "rotation_euler_xyz_deg": [rx,ry,rz], "scale": [sx,sy,sz],
+                "collision": "gameplay" | "decoration", "anchored": true } ],
+  "cameras": [ { "name": "<acceptance view>", "position": [x,y,z], "look_at": [x,y,z], "fov_deg_vertical": <n>, "render": "<png>" } ] }
+```
 
-`gamemaster/` from v0.2 is retired; `board/` and `game/` replace it. Runtime folders (`board/`, `builds/`, `assets/` except `library/`, `game/scenes/*/target*.png`) are ignored by git except their templates.
+Judge subagents that lanes spawn by name are registered in `.codex/config.toml` with a description that begins with `Judge subagent:`; they are not lanes: `luau-reviewer` (spawned by `code`), `computer-player` (spawned by `studio`).
+
+`gamemaster/` from v0.2 is retired; `board/` and `game/` replace it. Runtime folders (`board/tasks`, `board/reports`, `board/*.log`, `builds/`, `assets/` except `library/`, `game/scenes/*/target*.png`) are ignored by git except their templates.
 
 ## 9. Style of the game (all lanes)
 
@@ -129,11 +129,11 @@ Stylized realism as Roblox's best studios ship it, anchored by the target frames
 
 ## 10. Roblox and Blender constraints (engine facts)
 
-Mesh ≤ 20,000 triangles, file ≤ 20 MB, textures above 1024 downsampled (hero at 2048 only when needed), one texture set per mesh, Principled BSDF with image textures only (bake before export), metres with origin at base centre, Y-up on export, modular pieces on a grid with matching end profiles; no custom LOD chains. Modelling in Blender happens through whatever the session has: a Blender MCP bridge, or bpy scripts run headlessly; the gates always run through `tools/blender/` (fixed-camera renders under reference light, baking, GLB export with re-import verification, `layout.json`, side-by-side), because a render that cannot be compared and a mesh that was not verified do not count. Roblox is driven through Studio MCP (`roblox-studio-mcp` skill) with leases: one exclusive Play/input/camera owner at a time.
+Mesh ≤ 20,000 triangles, file ≤ 20 MB, textures above 1024 downsampled (hero at 2048 only when needed), one texture set per mesh, Principled BSDF with image textures only (bake before export), metres with origin at base centre, Y-up on export, modular pieces on a grid with matching end profiles; no custom LOD chains. Modelling in Blender happens through whatever the session has: a Blender MCP bridge, or bpy scripts; the lane writes and keeps its own scripts. What the lane must produce regardless of method: renders from cameras that do not move between stages under light that does not change between stages, materials baked to image textures before export, a GLB re-imported in a fresh Blender scene to read back triangles, textures and dimensions against the limits above, and `builds/<n>/layout.json` for the assembly. Roblox is driven through Studio MCP (`roblox-studio-mcp` skill) with leases: one exclusive Play/input/camera owner at a time.
 
 ## 11. Gates (objective before judgement)
 
-World: `export_glb.py` verification; side-by-side with the target frame; fresh judge on renders. Creatures: rig imports, animations play in Studio, Auto Setup passed. Code: `tools/check/check_luau.py` strict, Lune unit tests, playtest scenarios, computer-player completes the route. VFX: clip from a fixed camera, judge on frames. UI: captures at phone, tablet and desktop viewports against the UI target mockup; style sheet is the only source of colour, type and spacing. Audio: `tools/audio/gate.py` (duration, loudness, clipping, silence, format) and a source with a licence in provenance. Design: `tools/design/design_check.py` (every system named in a scene's `gameplay.md` has a spec section in `game/DESIGN.md`, every encounter names its enemies, space, mechanics and feel target, every enemy has a spec); tuning changes cite a playtest or completion report. Story: `tools/story/contract_check.py` (every quest has trigger, goal, choice, consequence, reward, place; every NPC has a place, a schedule and lines; every place named exists in the scene). Build: import without errors, captures from the acceptance cameras, diff against the Blender render.
+World: re-import verification of every GLB (triangles, textures, dimensions printed); the side-by-side of render and target frame; fresh judge on renders. Creatures: rig imports, animations play in Studio, Auto Setup passed. Code: `tools/check/check_luau.py` strict, Lune unit tests, playtest scenarios, computer-player completes the route. VFX: clip from a fixed camera, judge on frames. UI: captures at phone, tablet and desktop viewports against the UI target mockup; style sheet is the only source of colour, type and spacing. Audio: `tools/audio/gate.py` (duration, loudness, clipping, silence, format) and a source with a licence in provenance. Design: `tools/design/design_check.py` (every system named in a scene's `gameplay.md` has a spec section in `game/DESIGN.md`, every encounter names its enemies, space, mechanics and feel target, every enemy has a spec); tuning changes cite a playtest or completion report. Story: `tools/story/contract_check.py` (every quest has trigger, goal, choice, consequence, reward, place; every NPC has a place, a schedule and lines; every place named exists in the scene). Build: import without errors, captures from the acceptance cameras, diff against the Blender render.
 
 ## 12. Autonomy rules (all lanes)
 

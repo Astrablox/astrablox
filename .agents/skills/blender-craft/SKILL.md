@@ -49,7 +49,7 @@ Roughness carries most of the realism: worn timber is rougher on top than on its
 
 ## Baking, and how bakes fail
 
-Only a Principled BSDF reading image textures survives GLB export. Procedural node trees, shader math and layered shaders vanish silently and leave a flat grey material in Studio, so every material is baked to images (colour, roughness, metallic, normal in tangent space, ambient occlusion) and the material is rewired to read those images. `tools/blender/bpy/bake_pbr.py` does this, run through `tools/blender/blender.py`; its docstring carries the flags and `tools/blender/README.md` the order.
+Only a Principled BSDF reading image textures survives GLB export. Procedural node trees, shader math and layered shaders vanish silently and leave a flat grey material in Studio, so every material is baked to images (colour, roughness, metallic, normal in tangent space, ambient occlusion) and the material is rewired to read those images. your bake script (blender-craft: bake colour, roughness, metallic, normal and AO to images and rewire the material) does this, run through headless Blender (`blender -b`); its docstring carries the flags and the `layout.json` schema in docs/contract.md §8 the order.
 
 Baking needs a UV layout that exists and does not overlap, with margin between islands - marked seams and unwrap for pieces the player inspects, Smart UV Project for the rest. After every bake, open the images: a black map, a magenta map or a map with no variation means the bake failed, and the failure is invisible until it reaches Studio. Then render again with the baked materials and compare to the pre-bake render; the two must match, or the bake lost something.
 
@@ -77,7 +77,7 @@ Light does not repair geometry. A piece that only reads because the render is da
 
 Before export: apply scale and rotation, zero the location so the piece sits at its own origin with that origin at its base centre, apply modifiers, recalculate normals outside (flipped faces render black in Studio), merge by distance after boolean and array work, delete interior faces of closed objects, and remove loose vertices and degenerate faces (the importer drops them and the mesh changes shape). Do not triangulate by hand; the exporter does it. Export Y-up with materials and packed textures.
 
-`tools/blender/bpy/export_glb.py` writes the file and then re-imports it in a clean process and prints, per mesh, triangles, materials, images and their sizes, and dimensions in metres, refusing anything over the engine limits. Only a GLB that passed that script is a deliverable, and the printout is the evidence, not a sentence about it.
+your export-and-verify script (blender-craft) writes the file and then re-imports it in a clean process and prints, per mesh, triangles, materials, images and their sizes, and dimensions in metres, refusing anything over the engine limits. Only a GLB that passed that script is a deliverable, and the printout is the evidence, not a sentence about it.
 
 Two more traps: GLB compression extensions (Draco, meshopt quantization, WebP or KTX2 textures) make a file Roblox will not import, so they stay off; and Roblox merges vertices on import, which can soften split normals on hard-surface pieces - check the re-imported result rather than assuming the export is what arrives.
 

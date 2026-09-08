@@ -76,7 +76,6 @@ direction.
 
 ## Board, bus and leases
 
-Heartbeat at the start of every turn: `python tools/board/board.py heartbeat --session studio`.
 Claim with `python tools/board/board.py claim <id> --lane studio`; finish with
 `python tools/board/board.py done <id> --report board/reports/<id>.md` or
 `python tools/board/board.py blocked <id> --report <path>`; before closing, run

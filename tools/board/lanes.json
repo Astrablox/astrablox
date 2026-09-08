@@ -1,16 +1,60 @@
 {
-  "_comment": "Session names and reasoning effort per lane (docs/contract.md §2, §13). One source for board.py, supervisor.py, run_studio.ps1 and run_studio.sh.",
+  "_comment": "Lane names and the reasoning effort the lead passes when spawning each lane (docs/contract.md §2, §13). One source for board.py --lane validation and the lead.",
   "lanes": [
-    {"name": "lead",      "effort": "xhigh",  "owns": "scene plan, concept frames, assembly, builds, acceptance, dispatch"},
-    {"name": "world",     "effort": "xhigh",  "owns": "kit pieces, hero structures, terrain, vegetation, Blender lighting, GLB export"},
-    {"name": "creatures", "effort": "xhigh",  "owns": "character parts, NPC and monster models, rigs, animations, accessories"},
-    {"name": "vfx",       "effort": "xhigh",  "owns": "mesh effects, flipbooks, particles, beams, hitstop, client presentation code"},
-    {"name": "code",      "effort": "high",   "owns": "controller, abilities, combat, enemy AI, quests, save data, remotes, code review"},
-    {"name": "story",     "effort": "xhigh",  "owns": "lore, scene list, scripts, NPC roster, quests, scene contracts"},
-    {"name": "design",    "effort": "xhigh",  "owns": "core loop and pillars (game/DESIGN.md), system specs, per-scene gameplay contract, tuning from playtests"},
-    {"name": "studio",    "effort": "xhigh",  "owns": "Studio import, assembly, Roblox lighting, audio placement, playtest, captures, build export"},
-    {"name": "ui",        "effort": "xhigh",  "owns": "HUD, menus, prompts, dialogue and quest interfaces and their client code"},
-    {"name": "audio",     "effort": "high",   "owns": "sound effects, ambiences, music, adaptive layers, audio gates, catalog"},
-    {"name": "dev",       "effort": "xhigh",  "owns": "retro of each accepted scene; fixes lane files, skills and tools"}
+    {
+      "name": "lead",
+      "effort": "xhigh",
+      "owns": "scene plan, concept frames, assembly, builds, acceptance, dispatch"
+    },
+    {
+      "name": "world",
+      "effort": "xhigh",
+      "owns": "kit pieces, hero structures, terrain, vegetation, Blender lighting, GLB export"
+    },
+    {
+      "name": "creatures",
+      "effort": "xhigh",
+      "owns": "character parts, NPC and monster models, rigs, animations, accessories"
+    },
+    {
+      "name": "vfx",
+      "effort": "xhigh",
+      "owns": "mesh effects, flipbooks, particles, beams, hitstop, client presentation code"
+    },
+    {
+      "name": "code",
+      "effort": "high",
+      "owns": "controller, abilities, combat, enemy AI, quests, save data, remotes, code review"
+    },
+    {
+      "name": "story",
+      "effort": "xhigh",
+      "owns": "lore, scene list, scripts, NPC roster, quests, scene contracts"
+    },
+    {
+      "name": "design",
+      "effort": "xhigh",
+      "owns": "core loop and pillars (game/DESIGN.md), system specs, per-scene gameplay contract, tuning from playtests"
+    },
+    {
+      "name": "studio",
+      "effort": "xhigh",
+      "owns": "Studio import, assembly, Roblox lighting, audio placement, playtest, captures, build export"
+    },
+    {
+      "name": "ui",
+      "effort": "xhigh",
+      "owns": "HUD, menus, prompts, dialogue and quest interfaces and their client code"
+    },
+    {
+      "name": "audio",
+      "effort": "high",
+      "owns": "sound effects, ambiences, music, adaptive layers, audio gates, catalog"
+    },
+    {
+      "name": "dev",
+      "effort": "xhigh",
+      "owns": "retro of each accepted scene; fixes lane files, skills and tools"
+    }
   ]
 }

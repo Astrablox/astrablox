@@ -99,8 +99,7 @@ line you read it from.
 Claim your card with `python3 tools/board/board.py claim <id> --lane design`. Finish with
 `board.py done <id> --report board/reports/<id>.md` or `board.py blocked <id> --report <path>`. If
 the board tool does not put the signal on the bus itself, send it: `codex queue --session lead
-"TASK <id> DONE board/reports/<id>.md"`. Write a heartbeat at the start of every turn:
-`board.py heartbeat --session design`. A signal is one line and carries no content; everything
+"TASK <id> DONE board/reports/<id>.md"`. A signal is one line and carries no content; everything
 else is in files. Never ask a question - there is nobody to answer. Decide, write the assumption
 in the report, continue.
 

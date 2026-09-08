@@ -3,8 +3,13 @@
 command = "cmd.exe"
 args = ["/d", "/s", "/c", "scripts\\roblox-mcp.cmd"]
 
-# Lanes. One long-lived session per lane (`codex --session-name <lane>`); the lead is AGENTS.md.
-# Descriptions tell the lead and the supervisor what each lane owns; craft lives in the lane file and the skills.
+# Subagent settings: lanes are the lead's subagents and may spawn their own judges and workers.
+[agents]
+max_depth = 2
+max_concurrent_threads_per_session = 8
+
+# Lanes. Custom subagents the lead spawns by name; the lead itself is AGENTS.md.
+# Descriptions tell the lead what each lane owns; craft lives in the lane file and the skills.
 
 [agents."world"]
 description = "The world lane (session `world`): kit pieces, hero structures, terrain, vegetation and Blender lighting matched to the scene's target frame, exported as verified GLB. Works from task cards on the board; reports with the contract markers."

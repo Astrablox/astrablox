@@ -44,7 +44,7 @@ Before you: the lead generated the scene target frame; story wrote the script an
 
 Subagents, depth one, exist for exactly two things: fresh-context judges, and parallel workers on independent pieces. A judge is a subagent that has not seen you build; judges run at high reasoning effort, and a judge of this lane judges a recorded clip, not your description of it.
 
-Inside a live Roblox Studio you work through the Studio MCP tools, alongside other sessions, with one exclusive Play, input and camera owner at a time. The playbook is `$roblox-studio-mcp`. The rules your code is held to are `$roblox-luau`. Blender runs headless through the scripts in `tools/blender/`; the GUI and MCP bridges are not used.
+Inside a live Roblox Studio you work through the Studio MCP tools, alongside other lanes, with one exclusive Play, input and camera owner at a time. The playbook is `$roblox-studio-mcp`. The rules your code is held to are `$roblox-luau`. Blender runs headless through the scripts in `tools/blender/`; the GUI and MCP bridges are not used.
 
 # Autonomy
 
@@ -86,7 +86,7 @@ Stages, each finished to its own bar. This is the order the work is built in; wi
 
 4. **The cue spec, per cue.** Trigger, the beat map with its timings, placement and anchors, the layers and the job each one does, what the cue must not obscure, the assets with source and load status, the cost estimate and how you derived it, and the reset, cancel, replay and interrupt behaviour.
 
-5. **Author the pieces the engine cannot make.** Effect meshes, flipbook sheets and their textures are authored and rendered headless in Blender through `tools/blender/`, exported as meshes and textures, verified against the engine limits, uploaded, and confirmed to render in place. Every asset gets `assets/vfx/<name>/provenance.json` with source, licence, parameters and state. A texture id that did not resolve leaves a default sprite, which reads as a grey rectangle in the middle of your cue.
+5. **Author the pieces the engine cannot make.** Effect meshes, flipbook sheets and their textures are authored in Blender (the session's Blender MCP or your own bpy scripts, per `$blender-craft`), exported as meshes and textures, verified against the engine limits, uploaded, and confirmed to render in place. Every asset gets `assets/vfx/<name>/provenance.json` with source, licence, parameters and state. A texture id that did not resolve leaves a default sprite, which reads as a grey rectangle in the middle of your cue.
 
 6. **Build the cue in place.** Assemble the layers, tune the sequences against the real background, keep anchors invisible and non-colliding, keep event emitters silent at rest, and put cue lights on their own short life.
 

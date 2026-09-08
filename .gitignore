@@ -17,7 +17,8 @@ __pycache__/
 # Runtime state of the studio: board, builds, generated assets, target frames. Templates stay tracked.
 board/tasks/
 board/reports/
-board/heartbeats/
+board/scenes/
+board/lead.continue.json
 board/*.log
 board/render.lock
 builds/
@@ -41,7 +42,8 @@ assets-work/
 # v0.3 runtime state (docs/v0.3-contract.md §8): boards, builds, generated assets, target frames
 board/tasks/
 board/reports/
-board/heartbeats/
+board/scenes/
+board/lead.continue.json
 board/*.log
 builds/
 assets/*

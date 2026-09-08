@@ -3,12 +3,13 @@
 
 What it does: creates, claims, closes and lists task cards in board/tasks/, checks reports in
 board/reports/, sends bus signals through `codex queue` and records them in board/queue.log,
-writes session heartbeats. Every lane session uses it instead of editing cards by hand, so the
+holds scene claims for parallel studio instances. Every lane uses it instead of editing cards by hand, so the
 front matter, the section order and the queue log stay identical for everybody.
 
 When to use: lead — `new` to dispatch a task, `return` to send it back once, `signal` after every
 dispatch and acceptance. Any lane — `next` to find work, `claim` before starting, `done`/`blocked`
-with a report when finished, `heartbeat` while working (claim and done also refresh it; next is a read-only query).
+with a report when finished (next is a read-only query). Instances — `claim-scene <id>` before working a scene,
+`release-scene <id> [--accepted]` after; `scenes` lists who holds what.
 
 Returns: ids and file paths on stdout; exit 0 on success, 1 on a refusal (wrong lane, wrong
 status, missing report marker, bad signal) with the reason on stderr.
@@ -23,7 +24,7 @@ Examples:
   board.py return 043 --notes "Silhouette flat from the far camera; roof pitch too low"
   board.py signal --to world "TASK 043 OPEN board/tasks/043.md"   # --dry-run prints, no codex call
   board.py report-check board/reports/043.md
-  board.py heartbeat --session world --task 043
+  board.py claim-scene harbour ; board.py release-scene harbour --accepted ; board.py scenes
   board.py list --lane world --status open ; board.py show 043 ; board.py state
 
 Root: the checkout root is found by walking up from the current directory to a folder that
@@ -91,8 +92,7 @@ class Board:
         self.root = pathlib.Path(root)
         self.tasks = self.root / "board" / "tasks"
         self.reports = self.root / "board" / "reports"
-        self.heartbeats = self.root / "board" / "heartbeats"
-        for d in (self.tasks, self.reports, self.heartbeats):
+        for d in (self.tasks, self.reports):
             d.mkdir(parents=True, exist_ok=True)
 
     # ----- cards -----
@@ -134,21 +134,6 @@ class Board:
             if front.get("lane") == lane and front.get("status") in ("open", "returned") and self.deps_done(front):
                 return front
         return None
-
-    # ----- heartbeats -----
-    def heartbeat(self, session, task=""):
-        p = self.heartbeats / f"{session}.json"
-        p.write_text(json.dumps({"session": session, "time": now_iso(), "task": task or ""}, indent=1), encoding="utf-8")
-        return p
-
-    def heartbeat_of(self, session):
-        p = self.heartbeats / f"{session}.json"
-        if not p.exists():
-            return None
-        try:
-            return json.loads(p.read_text(encoding="utf-8"))
-        except json.JSONDecodeError:
-            return None
 
 
 def parse_card(text):
@@ -304,7 +289,6 @@ def cmd_claim(b, a):
     if not front.get("deadline") and a.hours:
         front["deadline"] = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=a.hours)).replace(microsecond=0).isoformat().replace("+00:00", "Z")
     b.write(front["id"], front, body)
-    b.heartbeat(a.lane, front["id"])
     print(f"claimed {front['id']} by {a.lane} deadline {front.get('deadline') or '-'}")
 
 
@@ -321,8 +305,6 @@ def cmd_close(b, a, status):
         raise SystemExit("report incomplete:\n  " + "\n  ".join(problems))
     front["status"] = status
     b.write(front["id"], front, body)
-    if front.get("claimed_by"):
-        b.heartbeat(front["claimed_by"], "")
     print(f"{status} {front['id']} report {a.report}")
 
 
@@ -373,8 +355,36 @@ def cmd_state(b, a):
     print(p.read_text(encoding="utf-8") if p.exists() else f"(no {p})")
 
 
-def cmd_heartbeat(b, a):
-    print(b.heartbeat(a.session, a.task))
+def _scene_path(b, scene):
+    d = b.root / "board" / "scenes"; d.mkdir(parents=True, exist_ok=True)
+    return d / f"{scene}.json"
+
+
+def cmd_claim_scene(b, a):
+    p = _scene_path(b, a.scene)
+    who = a.by or os.environ.get("ASTRA_INSTANCE") or os.environ.get("ASTRA_SESSION") or f"pid-{os.getpid()}"
+    if p.exists():
+        cur = json.loads(p.read_text(encoding="utf-8"))
+        if cur.get("status") == "claimed" and cur.get("by") != who:
+            raise SystemExit(f"scene {a.scene} is held by {cur.get('by')} since {cur.get('since')}")
+        if cur.get("status") == "accepted":
+            raise SystemExit(f"scene {a.scene} is already accepted")
+    p.write_text(json.dumps({"scene": a.scene, "status": "claimed", "by": who, "since": now_iso()}, indent=1), encoding="utf-8")
+    print(f"{a.scene} claimed by {who}")
+
+
+def cmd_release_scene(b, a):
+    p = _scene_path(b, a.scene)
+    rec = json.loads(p.read_text(encoding="utf-8")) if p.exists() else {"scene": a.scene}
+    rec.update(status="accepted" if a.accepted else "open", released=now_iso())
+    p.write_text(json.dumps(rec, indent=1), encoding="utf-8")
+    print(f"{a.scene} {rec['status']}")
+
+
+def cmd_scenes(b, a):
+    d = b.root / "board" / "scenes"
+    for p in sorted(d.glob("*.json")) if d.exists() else []:
+        r = json.loads(p.read_text(encoding="utf-8")); print(f"{r.get('scene'):12} {r.get('status'):9} {r.get('by', '')} {r.get('since', '')}")
 
 
 def cmd_report_check(b, a):
@@ -432,8 +442,11 @@ def build_parser():
     p.set_defaults(fn=cmd_signal)
 
     sub.add_parser("state", help="print board/STATE.md").set_defaults(fn=cmd_state)
-    p = sub.add_parser("heartbeat", help="write board/heartbeats/<session>.json"); p.add_argument("--session", required=True); p.add_argument("--task", default="")
-    p.set_defaults(fn=cmd_heartbeat)
+    p = sub.add_parser("claim-scene", help="claim a scene for this studio instance (refused when another instance holds it)")
+    p.add_argument("scene"); p.add_argument("--by", default=None); p.set_defaults(fn=cmd_claim_scene)
+    p = sub.add_parser("release-scene", help="release a scene claim; --accepted records the scene as accepted")
+    p.add_argument("scene"); p.add_argument("--accepted", action="store_true"); p.set_defaults(fn=cmd_release_scene)
+    sub.add_parser("scenes", help="list scene claims").set_defaults(fn=cmd_scenes)
     p = sub.add_parser("report-check", help="check §5 markers and that every DELIVERED path exists (exit 1 when incomplete)")
     p.add_argument("path"); p.set_defaults(fn=cmd_report_check)
     return ap

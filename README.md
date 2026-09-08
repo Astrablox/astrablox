@@ -30,10 +30,10 @@
 
 ## What is this?
 
-AstraBlox is a studio, not a script. Long-lived Codex sessions, one per lane, work in the same checkout and talk to each other over `codex queue`. A lead owns the scene being built; the lanes own their craft. The studio generates its own target frames, models toward them in headless Blender, imports into Roblox Studio through its MCP server, plays the result with ordinary controls, and after every accepted scene a `dev` lane reads what happened and rewrites the lanes that fell short. Nothing waits for a human: the owner's voice lives in one file, `game/VISION.md`.
+AstraBlox is a studio, not a script. One Codex session is one studio instance: the lead owns the scene being built and spawns the lanes as its subagents; the lanes own their craft and spawn their own judges. Several instances run side by side in separate terminals, each on a different scene, sharing nothing but the files and the board. The studio generates its own target frames, models toward them in headless Blender, imports into Roblox Studio through its MCP server, plays the result with ordinary controls, and after every accepted scene a `dev` lane reads what happened and rewrites the lanes that fell short. Nothing waits for a human: the owner's voice lives in one file, `game/VISION.md`.
 
 - **The picture comes first.** Every scene, piece and screen is built toward an image the studio generated and judged, then compared side by side after every build.
-- **Blender for everything that is a mesh, Roblox for everything that behaves.** Kits, heroes, creatures, effects and interface art are modelled in Blender (through the session's Blender MCP or bpy scripts) and pass through the toolkit's gates: fixed-camera renders, baked materials, verified GLB, a layout for Studio; gameplay, AI, quests, lighting and audio live in Studio.
+- **Blender for everything that is a mesh, Roblox for everything that behaves.** Kits, heroes, creatures, effects and interface art are modelled in Blender (through the session's Blender MCP or bpy scripts) and leave it with the same evidence every time: fixed-camera renders, baked materials, a re-imported and measured GLB, a layout for Studio; gameplay, AI, quests, lighting and audio live in Studio.
 - **Proof, not reports.** A piece has a readiness state that resets when it changes; a scene is done when the Studio capture reads as the target frame and the route is completed by the player agent.
 - **It improves itself.** The `dev` lane keeps a journal and a numbered problem inventory, fixes prompts, skills and tools after each scene, and a fresh audit judges every fix.
 
@@ -49,7 +49,7 @@ game/VISION.md ──► story + design (one scene ahead) ──► lead: target
 
 ## The lanes
 
-Each lane is a Codex session started with `codex --session-name <lane>`; its craft is a TOML file in [`.codex/agents/`](.codex/agents/) and the skills it loads from [`.agents/skills/`](.agents/skills/). The lead's contract is [`AGENTS.md`](AGENTS.md); the names, formats and rules every lane shares are in [`docs/contract.md`](docs/contract.md).
+Each lane is a custom subagent the lead spawns by name; its craft is a TOML file in [`.codex/agents/`](.codex/agents/) and the skills it loads from [`.agents/skills/`](.agents/skills/). The lead's contract is [`AGENTS.md`](AGENTS.md); the names, formats and rules every lane shares are in [`docs/contract.md`](docs/contract.md).
 
 | Lane | Owns |
 |---|---|
@@ -71,7 +71,7 @@ Each lane is a Codex session started with `codex --session-name <lane>`; its cra
 
 **1. Codex** — `npm install -g @openai/codex && codex login` (0.153 or newer; `codex queue` needs 0.149+).
 
-**2. Blender 4.x** — install it; `python tools/blender/blender.py` finds it or set `BLENDER=<path>`.
+**2. Blender 4.x** — install it; the lanes drive it through your session's Blender MCP or their own bpy scripts.
 
 **3. Roblox Studio** — open a published place, Assistant → Manage MCP Servers → Enable Studio as MCP server.
 
@@ -80,11 +80,11 @@ Each lane is a Codex session started with `codex --session-name <lane>`; its cra
 **5. Start the studio**
 
 ```powershell
-.\scripts\run_studio.ps1          # opens one terminal per lane plus the supervisor
+.\scripts\run_studio.ps1                 # one studio instance: the lead with its lanes as subagents
 .\scripts\run_studio.ps1 -Stop    # writes STOP; every lane finishes its card and halts
 ```
 
-The lead reads the vision, dispatches the first story and design cards, generates target frames and starts the first scene. Progress is visible in `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/` (renders, side-by-sides, Studio captures, `CHANGES.md`). `codex agents` shows every session; `codex queue --session lead "..."` is how you talk to the lead while it runs.
+The lead reads the vision, claims a scene, spawns story and design for it, generates target frames and starts building. Progress is visible in `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/` (renders, side-by-sides, Studio captures, `CHANGES.md`). `codex queue --session lead-1 "Latest owner instruction: ..."` is how you talk to an instance while it runs.
 
 Optional keys: `TRIPO_API_KEY` for image-to-3D form guides, `ROBLOX_API_KEY` for Open Cloud uploads, `OPENAI_API_KEY` only if your Codex session has no image-generation tool (target frames are generated with the session's own tool first). Without a key the corresponding tool prints what it would do and the lane reports the blocker.
 
@@ -94,8 +94,7 @@ Optional keys: `TRIPO_API_KEY` for image-to-3D form guides, `ROBLOX_API_KEY` for
 
 | Folder | What is in it |
 |---|---|
-| `tools/board/` | `board.py` (task cards, claims, reports, signals over `codex queue`), `supervisor.py` (wakes idle lanes, reopens stale tasks, STOP), `build_publish.py` (numbered builds with side-by-sides) |
-| `tools/blender/` | headless launcher, fixed-camera renders, PBR baking, GLB export with re-import verification, layout export, side-by-side compositor |
+| `tools/board/` | `board.py` (task cards, claims, reports, scene claims for parallel instances, signals over `codex queue`), `build_publish.py` (numbered builds with side-by-sides) |
 | `tools/assets/` | Creator Store search, CC0 textures and skyboxes, concept image → Tripo mesh → optimise → Open Cloud upload → Studio insert, kit catalog |
 | `tools/check/` | luau-lsp gate with Roblox types |
 | `tools/audio/` | Creator Store audio search, objective audio gates |
@@ -114,12 +113,12 @@ astrablox/
 ├── .codex/agents/*.toml      one file per lane · .codex/config.toml registers them
 ├── .agents/skills/           blender-craft, concept-frames, narrative-witcher, ui-premium, audio-pipeline, roblox-*
 ├── game/                     VISION.md, DESIGN.md, LORE.md, PLAN.md, scenes/<id>/{card,script,contract,gameplay}.md
-├── board/                    STATE.md, tasks/, reports/, heartbeats/, queue.log   (runtime, ignored)
+├── board/                    STATE.md, tasks/, reports/, scenes/, queue.log      (runtime, ignored)
 ├── builds/<n>/               renders, side-by-sides, captures, CHANGES.md          (runtime, ignored)
 ├── assets/                   per-lane assets with provenance; library/ is tracked
 ├── studio/                   journal.md, inventory.md, scenes/<id>/retro.md
-├── tools/                    board, blender, assets, check, audio, story, studio
-├── scripts/                  run_studio.ps1 / run_studio.sh, Stop hook, player harness
+├── tools/                    board, assets, check, audio, story, design, studio
+├── scripts/                  run_studio.ps1 / run_studio.sh (N instances), Stop hook, player harness
 ├── tests/                    fixtures for every tool
 └── SETUP.md · RELEASE_NOTES.md · LICENSE
 ```
@@ -147,7 +146,7 @@ The gate must pass before a commit that touches `AGENTS.md`, `.codex/` or `.agen
 
 **v0.2.** Every role rewritten around its craft; art direction with a style kit; set pieces as clips; the studio-developer role and the reporting tools.
 
-**v1.0.0.** The studio becomes autonomous: lanes as long-lived sessions on a file board with `codex queue` as the bus, target frames the studio generates itself, modelling in headless Blender, a design lane and a story lane built on CD Projekt Red's quest craft, a premium interface lane, an audio pipeline from open sources, and a dev lane that improves the rest after every scene. The scene above was built by the Blender pipeline from one target frame; the first full autonomous scene cycle on this version is still to be run, so its results are not claimed here. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**v1.0.0.** The studio becomes autonomous: lanes as the lead's subagents on a file board, parallel instances on parallel scenes, target frames the studio generates itself, modelling in headless Blender, a design lane and a story lane built on CD Projekt Red's quest craft, a premium interface lane, an audio pipeline from open sources, and a dev lane that improves the rest after every scene. The scene above was built by the Blender pipeline from one target frame; the first full autonomous scene cycle on this version is still to be run, so its results are not claimed here. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 ---
 

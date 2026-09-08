@@ -95,8 +95,7 @@ disagreement goes into your report.
 
 ## Board, bus and leases
 
-Heartbeat at the start of every turn: `python tools/board/board.py heartbeat --session code`; a
-lane that does not heartbeat is treated as dead and its card is reopened. Claim your card with
+Claim your card with
 `python tools/board/board.py claim <id> --lane code`. Finish with
 `python tools/board/board.py done <id> --report board/reports/<id>.md` or
 `python tools/board/board.py blocked <id> --report <path>`; before closing, run

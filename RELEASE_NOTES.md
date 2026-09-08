@@ -4,15 +4,15 @@ Date: 2026-09-09.
 
 v0.2 gave every role its craft and a role that fixes the roles. v1.0.0 turns the studio into something that runs on its own: no producer waiting for a human, no bounded run, no scene without a picture to build toward.
 
-- Lanes instead of roles: `lead`, `story`, `design`, `world`, `creatures`, `vfx`, `code`, `ui`, `audio`, `studio`, `dev`, each a long-lived Codex session with its own craft file and skills. They coordinate through a file board and `codex queue`; a supervisor script keeps them awake and honest. `docs/contract.md` holds every shared name and format.
-- The picture comes first: the `concept-frames` skill and the lead's cycle make the studio generate and judge target frames, orthographic sheets and interface mockups before anything is modelled or built, and compare every build side by side.
-- Blender as the modelling floor: `tools/blender/` renders from fixed cameras under reference lighting, bakes PBR, exports GLB with re-import verification and writes the layout the `studio` lane reproduces; `blender-craft` carries the stylized-realism craft that produced the scene on the README.
-- Gameplay and story with owners: the `design` lane (core loop, system specs, encounters, tuning) and the `story` lane (lore, scene plan, NPCs with schedules, quests with consequences, scene contracts), built on CD Projekt Red's quest craft and the screenplay studio's order of work; `tools/story/contract_check.py` gates the contract.
+- One Codex session is one studio instance: the lead (`AGENTS.md`) spawns the lanes `story`, `design`, `world`, `creatures`, `vfx`, `code`, `ui`, `audio`, `studio` and `dev` as its subagents, each with its own craft file and skills; lanes spawn their own fresh judges and workers (`agents.max_depth = 2`). Several instances run in parallel in separate terminals, each claiming a different scene on the board. `docs/contract.md` holds every shared name and format.
+- The picture comes first: the `concept-frames` skill and the lead's cycle make the studio generate and judge target frames, orthographic sheets and interface mockups with the session's own image tool before anything is modelled or built, and compare every build side by side.
+- Blender as the modelling floor, through the session's Blender MCP or the lane's own bpy scripts, always leaving the same evidence: fixed-camera renders under fixed light, baked materials, a GLB re-imported and measured against the engine limits, a `layout.json` the `studio` lane reproduces; `blender-craft` carries the stylized-realism craft that produced the scene on the README.
+- Gameplay and story with owners: the `design` lane (core loop, system specs, encounters, tuning; `tools/design/design_check.py`) and the `story` lane (lore, scene plan, NPCs with schedules, quests with consequences, scene contracts; `tools/story/contract_check.py`), built on CD Projekt Red's quest craft and the screenplay studio's order of work.
 - A premium interface lane with the `ui-premium` skill: mockup first, UI art as assets, style sheet as the only source of values, three viewports checked.
-- An audio pipeline instead of invented sounds: open sources and local generation only, objective gates, a catalog with provenance.
-- Readiness states, numbered builds with `CHANGES.md`, a one-page `board/STATE.md`, scene cards with the top three defects, and the `dev` retro after every scene.
+- An audio pipeline instead of invented sounds: open sources and local generation only, objective gates (`tools/audio/`), a catalog with provenance.
+- The board: task cards, reports with markers, scene claims for parallel instances, numbered builds with `CHANGES.md` and side-by-sides, a one-page `board/STATE.md`, scene cards with the top three defects; a Stop hook keeps an instance on the board until `STOP`; the `dev` retro after every scene.
 
-Static gate, board, Blender, audio, story and studio-tool fixtures pass. The first full autonomous scene cycle on this version is still to be run; nothing here claims a game.
+Static gate and the board, hook, studio-tool, audio, story and design fixtures pass. The first full autonomous scene cycle on this version is still to be run; nothing here claims a game.
 
 # v0.2.1 — The studio works on itself
 

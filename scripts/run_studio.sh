@@ -1,53 +1,33 @@
 #!/usr/bin/env bash
-# Start the AstraBlox v1.0 studio on Linux/macOS: one Codex session per lane, each in
-# a tmux window of session "astra". Lanes and efforts come from tools/board/lanes.json (contract §2, §13).
-#
-#   scripts/run_studio.sh                  # all lanes (add --supervisor for the watchdog)
-#   scripts/run_studio.sh lead world       # subset
-#   scripts/run_studio.sh --stop           # write STOP; every lane finishes its card and halts
-#   scripts/run_studio.sh --dry-run        # print commands only
-#   tmux attach -t astra                   # look at the windows
+# Start AstraBlox v1.0 on Linux/macOS: one or more studio instances, each a Codex session running the lead
+# with the lanes as its subagents, in a tmux window of session "astra".
+# Usage:
+#   scripts/run_studio.sh              # one instance
+#   scripts/run_studio.sh 3            # three instances working different scenes
+#   scripts/run_studio.sh --stop       # write STOP; every instance halts after its current step
+#   scripts/run_studio.sh --dry-run    # print the commands
 set -euo pipefail
-root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-cd "$root"
-dry=0; sup=0; lanes=()
+root="$(cd "$(dirname "$0")/.." && pwd)"; cd "$root"
+n=1; dry=0
 for arg in "$@"; do
   case "$arg" in
     --stop) date -u +"STOP requested %Y-%m-%dT%H:%M:%SZ" > STOP; echo "STOP written to $root/STOP"; exit 0 ;;
     --clear-stop) rm -f STOP ;;
     --dry-run) dry=1 ;;
-    --supervisor) sup=1 ;;
-    -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
-    *) lanes+=("$arg") ;;
+    -h|--help) sed -n '2,8p' "$0"; exit 0 ;;
+    *) n="$arg" ;;
   esac
 done
-[ -f STOP ] && { echo "STOP file present; run with --clear-stop" >&2; exit 1; }
+[ -f STOP ] && { echo "STOP file present; use --clear-stop" >&2; exit 1; }
 command -v codex >/dev/null || { echo "codex not found on PATH" >&2; exit 1; }
-command -v tmux >/dev/null || { echo "tmux not found" >&2; exit 1; }
-py=$(command -v python3 || command -v python)
-
-# lane<TAB>effort lines from lanes.json
-mapfile -t table < <("$py" -c 'import json,sys; d=json.load(open(sys.argv[1]))
-for l in d["lanes"]: print(l["name"]+"\t"+l["effort"])' tools/board/lanes.json)
-
-run() { # window-name, command
+run() { # name, command
   if [ "$dry" = 1 ]; then echo "[$1] $2"; return; fi
   if tmux has-session -t astra 2>/dev/null; then tmux new-window -t astra -n "$1" -c "$root" "$2"
   else tmux new-session -d -s astra -n "$1" -c "$root" "$2"; fi
 }
-started=()
-for row in "${table[@]}"; do
-  name="${row%%$'\t'*}"; effort="${row##*$'\t'}"
-  if [ "${#lanes[@]}" -gt 0 ]; then
-    keep=0; for l in "${lanes[@]}"; do [ "$l" = "$name" ] && keep=1; done; [ "$keep" = 1 ] || continue
-  fi
-  prompt="You are the $name session of the AstraBlox studio. Read board/STATE.md, then run: python tools/board/board.py next --lane $name -- and work the task it names (claim it first, refresh the heartbeat with board.py heartbeat --session $name while working, finish with a report and a signal to lead). When there is no task, wait for signals; a signal names a file, read it before acting. Never ask questions; decide, write the assumption in the report, continue."
-  run "$name" "ASTRA_SESSION=$name codex --session-name $name -c model_reasoning_effort=$effort --dangerously-bypass-approvals-and-sandbox \"$prompt\"; exec bash"
-  started+=("$name")
+for i in $(seq 1 "$n"); do
+  name="lead-$i"
+  prompt="You are studio instance $name: the lead of AGENTS.md with the lanes as your subagents. Read game/VISION.md and board/STATE.md, run python tools/board/board.py scenes, claim a scene from game/PLAN.md that no other instance holds (python tools/board/board.py claim-scene <id> --by $name), and run the scene cycle to acceptance. Never ask questions; decide, write the assumption into the scene card, continue until STOP exists."
+  run "$name" "ASTRA_SESSION=lead ASTRA_INSTANCE=$name codex --session-name $name -c model_reasoning_effort=xhigh --dangerously-bypass-approvals-and-sandbox \"$prompt\"; exec bash"
 done
-[ "${#started[@]}" -gt 0 ] || { echo "no lanes matched: ${lanes[*]}" >&2; exit 1; }
-if [ "${sup:-0}" = 1 ]; then
-  run supervisor "ASTRA_SESSION=supervisor $py tools/board/supervisor.py; exec bash"
-  started+=(supervisor)
-fi
-echo "started: ${started[*]}  (tmux attach -t astra)"
+echo "started $n instance(s) in tmux session astra (tmux attach -t astra)"

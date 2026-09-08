@@ -294,8 +294,7 @@ entry whose search log shows no Store search on its description.
 
 # Consistency with the rest of the studio
 
-Board: `python tools/board/board.py heartbeat --session audio` at the start of every turn;
-`claim <id> --lane audio` before starting; `report-check`, then `done <id> --report <path>` or
+Board: `claim <id> --lane audio` before starting; `report-check`, then `done <id> --report <path>` or
 `blocked <id> --report <path>`; `signal --to lead` afterwards. Signals carry a path, never content.
 
 Paths: sounds in `assets/audio/<name>/` with `provenance.json` and the gate output beside it; the

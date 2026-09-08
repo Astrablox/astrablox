@@ -1,31 +1,27 @@
 <#
 .SYNOPSIS
-  Start the AstraBlox v1.0 studio: one Codex session per lane, each in its own window (the supervisor only with -Supervisor).
+  Start AstraBlox v1.0: one or more studio instances, each a Codex session running the lead with the lanes as its subagents.
 .DESCRIPTION
-  Lanes and their reasoning effort come from tools/board/lanes.json (contract §2, §13). For each lane a new
-  PowerShell window runs `codex --session-name <lane> -c model_reasoning_effort=<effort>
-  --dangerously-bypass-approvals-and-sandbox "<start prompt>"` from the checkout root; the lane's role
-  is loaded by Codex from its name. The supervisor (tools/board/supervisor.py) gets its own window.
-  Sessions are long-lived: signals between them go through `codex queue` (see board/README.md).
-.PARAMETER Lanes
-  Subset of lanes to start, e.g. -Lanes lead,world. Default: all lanes in lanes.json.
-.PARAMETER Supervisor
-  Also open the supervisor (watchdog) window; off by default, useful for unattended 24/7 runs.
+  Each instance is `codex --session-name lead-<n> -c model_reasoning_effort=xhigh --dangerously-bypass-approvals-and-sandbox "<start prompt>"`
+  in its own window, started from the checkout root with ASTRA_SESSION=lead and ASTRA_INSTANCE=lead-<n>. The lead reads
+  game/VISION.md and board/STATE.md, claims a scene nobody else holds (board.py claim-scene) and works it with spawn_agent.
+  Instances share only the files and the board; several of them work different scenes in parallel.
+.PARAMETER Instances
+  How many studio instances to start. Default 1.
 .PARAMETER Stop
-  Create the STOP file in the checkout root; the supervisor sends STOP to every session and exits.
+  Create the STOP file in the checkout root; every instance finishes its current step and halts.
 .PARAMETER ClearStop
   Remove the STOP file before starting.
 .PARAMETER DryRun
   Print the commands instead of opening windows.
 .EXAMPLE
   .\scripts\run_studio.ps1
-  .\scripts\run_studio.ps1 -Lanes lead,world,studio
+  .\scripts\run_studio.ps1 -Instances 3
   .\scripts\run_studio.ps1 -Stop
 #>
 [CmdletBinding()]
 param(
-    [string[]]$Lanes = @(),
-    [switch]$Supervisor,
+    [ValidateRange(1, 16)][int]$Instances = 1,
     [switch]$Stop,
     [switch]$ClearStop,
     [switch]$DryRun
@@ -33,25 +29,16 @@ param(
 $ErrorActionPreference = "Stop"
 $root = [IO.Path]::GetFullPath((Split-Path -Parent $PSScriptRoot))
 $stopFile = Join-Path $root "STOP"
-$lanesFile = Join-Path $root "tools\board\lanes.json"
-$python = if (Get-Command python -ErrorAction SilentlyContinue) { "python" } else { "py" }
 $shell = if (Get-Command pwsh -ErrorAction SilentlyContinue) { "pwsh" } else { "powershell" }
 
 if ($Stop) {
     Set-Content -Path $stopFile -Value ("STOP requested " + (Get-Date -Format o)) -Encoding UTF8
-    Write-Host "STOP written to $stopFile; the supervisor will signal every session."
+    Write-Host "STOP written to $stopFile; every instance halts after its current step."
     return
 }
 if ($ClearStop -and (Test-Path $stopFile)) { Remove-Item $stopFile -Force }
 if (Test-Path $stopFile) { throw "STOP file present at $stopFile; run with -ClearStop to start." }
 if (-not (Get-Command codex -ErrorAction SilentlyContinue)) { throw "codex not found on PATH" }
-
-$all = (Get-Content $lanesFile -Raw | ConvertFrom-Json).lanes
-$selected = if ($Lanes.Count -gt 0) {
-    $wanted = $Lanes | ForEach-Object { $_.Split(",") } | ForEach-Object { $_.Trim() } | Where-Object { $_ }
-    $all | Where-Object { $wanted -contains $_.name }
-} else { $all }
-if (-not $selected) { throw "no lanes matched: $($Lanes -join ',')" }
 
 function Start-Window([string]$title, [string]$command) {
     $wrapped = "`$Host.UI.RawUI.WindowTitle = '$title'; Set-Location -LiteralPath '$root'; $command"
@@ -61,14 +48,11 @@ function Start-Window([string]$title, [string]$command) {
     Start-Process -FilePath $shell -ArgumentList @("-NoExit", "-ExecutionPolicy", "Bypass", "-EncodedCommand", $encoded) -WorkingDirectory $root | Out-Null
 }
 
-foreach ($lane in $selected) {
-    $name = $lane.name
-    $prompt = "You are the $name session of the AstraBlox studio. Read board/STATE.md, then run: python tools/board/board.py next --lane $name -- and work the task it names (claim it first, refresh the heartbeat with board.py heartbeat --session $name while working, finish with a report and a signal to lead). When there is no task, wait for signals; a signal names a file, read it before acting. Never ask questions; decide, write the assumption in the report, continue."
-    $cmd = "`$env:ASTRA_SESSION = '$name'; codex --session-name $name -c model_reasoning_effort=$($lane.effort) --dangerously-bypass-approvals-and-sandbox `"$prompt`""
+for ($i = 1; $i -le $Instances; $i++) {
+    $name = "lead-$i"
+    $prompt = "You are studio instance $name: the lead of AGENTS.md with the lanes as your subagents. Read game/VISION.md and board/STATE.md, run python tools/board/board.py scenes, claim a scene from game/PLAN.md that no other instance holds (python tools/board/board.py claim-scene <id> --by $name), and run the scene cycle to acceptance. Never ask questions; decide, write the assumption into the scene card, continue until STOP exists."
+    $cmd = "`$env:ASTRA_SESSION = 'lead'; `$env:ASTRA_INSTANCE = '$name'; codex --session-name $name -c model_reasoning_effort=xhigh --dangerously-bypass-approvals-and-sandbox `"$prompt`""
     Start-Window -title "astra:$name" -command $cmd
     Start-Sleep -Milliseconds 400
 }
-if ($Supervisor) {
-    Start-Window -title "astra:supervisor" -command "`$env:ASTRA_SESSION = 'supervisor'; $python tools\board\supervisor.py"
-}
-Write-Host ("started: " + (($selected | ForEach-Object { $_.name }) -join ", ") + $(if ($Supervisor) { ", supervisor" } else { "" }))
+Write-Host "started $Instances instance(s): " + ((1..$Instances | ForEach-Object { "lead-$_" }) -join ", ")
