@@ -25,3 +25,12 @@ Runtime state lives under `gamemaster/` and is separate from the portable framew
 session only while its count and deadline allow. The reusable framework is AGENTS.md,
 .codex/agents/, .agents/skills/, scripts/, gamemaster/tools/, tests/ and docs/. The owner's
 concept determines genre and scope; docs/examples/ is historical.
+
+The studio itself has an owner: `studio-developer` (`.codex/agents/studio-developer.toml`). In mode
+IMPROVE, or on any request about how an agent worked, the producer spawns it in FIX mode with the
+owner's words, the cycle folder and the paths; then a fresh instance in AUDIT mode judges only the
+changed files. `tools/studio/` gives both the evidence: `run_digest.py` (a cycle's reports against
+the markers the producer expects), `session_digest.py` (Codex session JSONL as trajectories) and
+`check_studio.py` (the static gate every change must pass). `docs/journal.md` records every change
+to the studio with its reason and how to verify it; `docs/inventory.md` numbers the problems and
+their fates.

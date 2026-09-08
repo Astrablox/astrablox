@@ -73,7 +73,7 @@ def evaluate(payload, environment=None, now=None):
         run["session_id"] = session
         atomic_json(gm / "session.json", {"workspace": str(gm.parent), "session_id": session})
         mode = run["mode"]
-        if mode not in ("PLAN", "BUILD", "PLAY", "REVIEW"):
+        if mode not in ("PLAN", "BUILD", "PLAY", "REVIEW", "IMPROVE"):
             raise ValueError("invalid mode")
         limit = integer(run["max_continues"], "max_continues")
         count = integer(run["continues"], "continues")

@@ -6,8 +6,12 @@ Everything the agents do is plain text in this checkout. Change a role in `.code
 
 ```powershell
 python -B tests/test_foundation_runtime.py
+python -B tests/test_studio_tools.py
+python -B tools/studio/check_studio.py
 python -B -m unittest scripts.player.test_player scripts.player.test_regressions
 ```
+
+`check_studio.py` is the static gate for roles, registrations, markers, skills and references; it must pass before a commit that touches `AGENTS.md`, `.codex/` or `.agents/`. A change to the studio also gets an entry in `docs/journal.md` (and, when it closes or opens a problem, `docs/inventory.md`). Prefer letting `studio-developer` make the change (`.\scripts\run.ps1 -Mode IMPROVE -Objective "..."`): it reads the run evidence first and a fresh instance audits the result.
 
 The launcher suite runs against a fake Codex in isolated temporary workspaces. The player suite mocks host input and capture and needs Pillow and pywin32. Neither opens Studio or sends real input. Set `PYTHONDONTWRITEBYTECODE=1` (or use `-B`) to keep bytecode caches out of the tree.
 
@@ -25,7 +29,7 @@ python -m venv .venv-wgc
 
 ## What is tracked
 
-Source: `AGENTS.md`, `.codex/agents/`, `.codex/config.toml`, `.codex/hooks.json`, `scripts/`, `gamemaster/tools/`, `tests/`, `docs/`, `artifacts/`. Everything else under `gamemaster/` (concept, state, bug list, inbox, logs, reports) is runtime data and stays ignored, as do `.env` files and any personal Codex profile. Large videos are release assets, not tracked files.
+Source: `AGENTS.md`, `.codex/agents/`, `.codex/config.toml`, `.codex/hooks.json`, `scripts/`, `gamemaster/tools/`, `tools/`, `tests/`, `docs/`, `artifacts/`. Everything else under `gamemaster/` (concept, state, bug list, inbox, logs, reports) is runtime data and stays ignored, as do `.env` files and any personal Codex profile. Large videos are release assets, not tracked files.
 
 ## Hooks
 

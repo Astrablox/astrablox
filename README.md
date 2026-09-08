@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/Website-astrablox.app-5f5fc4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/X-@astrabl0x-000000?style=for-the-badge&logo=x&logoColor=white" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/Release-v0.2.0-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.2.0"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.1"><img src="https://img.shields.io/badge/Release-v0.2.1-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.2.1"/></a>
 </p>
 
 <p align="center">
@@ -114,7 +114,7 @@ Under the hood: `scripts/run.ps1` starts one Codex session with a finite run rec
 
 ---
 
-## The 15 specialists
+## The 16 specialists
 
 Roles are tools the producer picks from, not a mandatory pipeline. Each one is a TOML profile in [`.codex/agents/`](.codex/agents/) with its responsibility, craft, criteria and the markers it returns. Craft reference the roles load on demand lives in [`.agents/skills/`](.agents/skills/) (environment art, materials, lighting and atmosphere, VFX, Luau, Studio MCP playbook, asset sourcing).
 
@@ -170,6 +170,15 @@ Roles are tools the producer picks from, not a mandatory pipeline. Each one is a
 |---|---|
 | `showcase-photographer` | Trailer-grade captures of the accepted build with its build ID |
 | `roblox-publisher` | Export, upload and publish only an explicitly authorised build; reports each state separately |
+
+</details>
+
+<details>
+<summary><strong>🛠 The studio itself</strong></summary>
+
+| Role | Purpose |
+|---|---|
+| `studio-developer` | Architect of the agents: reads a run from its digests and trajectories, diagnoses why a role produced a weak result, fixes roles, skills, tools and the producer contract on the right level, keeps the journal and inventory. A fresh AUDIT instance judges every change before it is accepted |
 
 </details>
 
@@ -244,7 +253,7 @@ The more mood and mechanics you give it, the better the game.
 astrablox/
 ├── AGENTS.md                 producer contract: modes, leases, briefs, evidence, recovery
 ├── .codex/
-│   ├── config.toml           Studio MCP wrapper + 15 role registrations (no credentials)
+│   ├── config.toml           Studio MCP wrapper + 16 role registrations (no credentials)
 │   ├── hooks.json            Stop hook wiring
 │   └── agents/*.toml         one profile per specialist
 ├── .agents/skills/           craft reference the roles load on demand (environment art, materials,
@@ -255,9 +264,10 @@ astrablox/
 │   ├── hooks/stop_continue.py
 │   └── player/               local capture, bounded input, recording, tests and manual
 ├── gamemaster/tools/audit.luau   read-only Studio inventory and diagnostics
+├── tools/studio/             check_studio (static gate), run_digest, session_digest
 ├── artifacts/                demo build: .rbxl, images, verification record, README
-├── docs/                     architecture, development guide, example architecture and art contract
-├── tests/                    isolated launcher and Stop-hook fixtures
+├── docs/                     architecture, development guide, studio journal and problem inventory, examples
+├── tests/                    isolated launcher, Stop-hook and studio-tool fixtures
 ├── SETUP.md · RELEASE_NOTES.md · LICENSE
 ```
 
@@ -292,7 +302,9 @@ The launcher suite runs against a fake Codex in isolated workspaces; the player 
 
 **Proven (v0.1.0).** One dated escape build was designed, built in parallel, reviewed, audited and completed five times by the player agent with ordinary controls, reaching a 321-second server clock with zero new console errors. The exported `.rbxl` was saved, re-opened and matched by hash, tree and script sources. Full record: [artifacts/README.md](artifacts/README.md).
 
-**v0.2.0.** The studio's craft and pipeline were rebuilt for AAA-scale fantasy work: art direction with a style kit, one builder per zone, effects owned end to end, set pieces delivered as clips. The first build on this version is still to be run; see [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**v0.2.0.** The studio's craft and pipeline were rebuilt for AAA-scale fantasy work: art direction with a style kit, one builder per zone, effects owned end to end, set pieces delivered as clips. The first build on this version is still to be run.
+
+**v0.2.1.** The studio can now work on itself: `studio-developer` diagnoses a run from its reports and session trajectories and rewrites the role, skill or tool that produced a weak result, with a fresh instance auditing the change; `tools/studio/` makes runs readable and gates the studio's consistency. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 **Not yet claimed.** Other genres, blind visual discovery, reset and death handling, multiplayer and mobile, adversarial remotes, publication and ordinary-player joining each need their own build and evidence before they appear here as supported. Referenced Roblox assets keep their own permissions; see [referenced content](artifacts/README.md#referenced-roblox-content).
 
@@ -311,5 +323,5 @@ Framework code and documentation are released under the [MIT license](LICENSE). 
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/🌐_Website-astrablox.app-5f5fc4?style=for-the-badge" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/𝕏_Follow-@astrabl0x-000000?style=for-the-badge" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.0"><img src="https://img.shields.io/badge/⬇_Release-v0.2.0-2ea44f?style=for-the-badge" alt="Release"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.2.1"><img src="https://img.shields.io/badge/⬇_Release-v0.2.1-2ea44f?style=for-the-badge" alt="Release"/></a>
 </p>

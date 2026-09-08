@@ -65,3 +65,7 @@ config_file = "agents/showcase-photographer.toml"
 [agents."roblox-publisher"]
 description = "Exports, uploads or publishes only a build the owner explicitly released; reports exported, uploaded, published and join-verified as separate states."
 config_file = "agents/roblox-publisher.toml"
+
+[agents."studio-developer"]
+description = "Call when the task is about the studio itself, not the game: a role, skill, tool, brief, report or the producer contract produced a weak or wrong result; the owner brought feedback about how an agent worked; a role, skill or tool is missing; a run must be read as a trajectory and diagnosed. FIX (default) reads the run evidence, builds the inventory, fixes on the right level and rewrites files whole; AUDIT is a fresh instance that judges the rewritten files only and returns ACCEPT / RETURN. Never edits the game or Studio, never publishes or pushes."
+config_file = "agents/studio-developer.toml"

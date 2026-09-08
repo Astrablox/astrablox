@@ -27,7 +27,7 @@ cd astrablox
 codex
 ```
 
-Codex asks whether to trust the folder. Say yes: trust is what loads `.codex/config.toml` (the Studio connection and the 15 roles). Then type your game:
+Codex asks whether to trust the folder. Say yes: trust is what loads `.codex/config.toml` (the Studio connection and the 16 roles). Then type your game:
 
 ```
 Horror escape. 3 floors underground, keycards, flickering lights, a monster that hunts you.
