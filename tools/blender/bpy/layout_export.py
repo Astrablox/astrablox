@@ -2,7 +2,7 @@
 
 Run:  python tools/blender/blender.py tools/blender/bpy/layout_export.py --blend work/scene.blend -- --out builds/12/layout.json --scene harbour --build 12 [--all]
 
-Schema (the one the studio lane reads; docs/v0.3-contract.md §8):
+Schema (the one the studio lane reads; docs/contract.md §8):
   { "scene": "<id>", "build": <n>, "source": "<blend>", "units": "metres", "up": "Y", "studs_per_metre": 3.5714,
     "pieces": [ { "name", "asset": "assets/<lane>/<name>/" | null, "glb": "<path>" | null,
                   "parent": "Workspace.Scene.<scene>.<group>", "position": [x,y,z], "rotation_euler_xyz_deg": [rx,ry,rz],

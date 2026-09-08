@@ -1,5 +1,5 @@
 {
-  "_comment": "Session names and reasoning effort per lane (docs/v0.3-contract.md §2, §13). One source for board.py, supervisor.py, run_studio.ps1 and run_studio.sh.",
+  "_comment": "Session names and reasoning effort per lane (docs/contract.md §2, §13). One source for board.py, supervisor.py, run_studio.ps1 and run_studio.sh.",
   "lanes": [
     {"name": "lead",      "effort": "xhigh",  "owns": "scene plan, concept frames, assembly, builds, acceptance, dispatch"},
     {"name": "world",     "effort": "xhigh",  "owns": "kit pieces, hero structures, terrain, vegetation, Blender lighting, GLB export"},

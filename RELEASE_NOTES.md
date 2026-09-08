@@ -1,10 +1,10 @@
-# v0.3.0 — The autonomous studio
+# v1.0.0 — The autonomous studio
 
 Date: 2026-09-09.
 
-v0.2 gave every role its craft and a role that fixes the roles. v0.3.0 turns the studio into something that runs on its own: no producer waiting for a human, no bounded run, no scene without a picture to build toward.
+v0.2 gave every role its craft and a role that fixes the roles. v1.0.0 turns the studio into something that runs on its own: no producer waiting for a human, no bounded run, no scene without a picture to build toward.
 
-- Lanes instead of roles: `lead`, `story`, `design`, `world`, `creatures`, `vfx`, `code`, `ui`, `audio`, `studio`, `dev`, each a long-lived Codex session with its own craft file and skills. They coordinate through a file board and `codex queue`; a supervisor script keeps them awake and honest. `docs/v0.3-contract.md` holds every shared name and format.
+- Lanes instead of roles: `lead`, `story`, `design`, `world`, `creatures`, `vfx`, `code`, `ui`, `audio`, `studio`, `dev`, each a long-lived Codex session with its own craft file and skills. They coordinate through a file board and `codex queue`; a supervisor script keeps them awake and honest. `docs/contract.md` holds every shared name and format.
 - The picture comes first: the `concept-frames` skill and the lead's cycle make the studio generate and judge target frames, orthographic sheets and interface mockups before anything is modelled or built, and compare every build side by side.
 - Blender as the modelling floor: `tools/blender/` renders from fixed cameras under reference lighting, bakes PBR, exports GLB with re-import verification and writes the layout the `studio` lane reproduces; `blender-craft` carries the stylized-realism craft that produced the scene on the README.
 - Gameplay and story with owners: the `design` lane (core loop, system specs, encounters, tuning) and the `story` lane (lore, scene plan, NPCs with schedules, quests with consequences, scene contracts), built on CD Projekt Red's quest craft and the screenplay studio's order of work; `tools/story/contract_check.py` gates the contract.

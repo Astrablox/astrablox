@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Start the AstraBlox v0.3 studio: one Codex session per lane plus the supervisor, each in its own window.
+  Start the AstraBlox v1.0 studio: one Codex session per lane plus the supervisor, each in its own window.
 .DESCRIPTION
   Lanes and their reasoning effort come from tools/board/lanes.json (contract §2, §13). For each lane a new
   PowerShell window runs `codex --session-name <lane> -c model_reasoning_effort=<effort>

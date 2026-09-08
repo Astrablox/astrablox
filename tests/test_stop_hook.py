@@ -1,4 +1,4 @@
-"""Stop hook fixtures (v0.3): a lane is pushed back to the board while it has work, and released otherwise.
+"""Stop hook fixtures (v1.0): a lane is pushed back to the board while it has work, and released otherwise.
 Run: python -B tests/test_stop_hook.py
 """
 import importlib.util

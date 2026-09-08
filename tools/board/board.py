@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""board.py: the task board of the AstraBlox studio (docs/v0.3-contract.md §3-§6, §8).
+"""board.py: the task board of the AstraBlox studio (docs/contract.md §3-§6, §8).
 
 What it does: creates, claims, closes and lists task cards in board/tasks/, checks reports in
 board/reports/, sends bus signals through `codex queue` and records them in board/queue.log,

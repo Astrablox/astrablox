@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""supervisor.py: deterministic watchdog of the studio bus (docs/v0.3-contract.md §2, §3).
+"""supervisor.py: deterministic watchdog of the studio bus (docs/contract.md §2, §3).
 
 What it does, every --interval seconds (default 120), for each session in tools/board/lanes.json:
   - the lane has open/returned tasks with satisfied depends_on and its heartbeat is missing or older

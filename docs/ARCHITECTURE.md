@@ -1,6 +1,6 @@
-# Architecture (v0.3)
+# Architecture (v1.0)
 
-The studio is a set of long-lived Codex sessions, one per lane, in one checkout. The lead (`AGENTS.md`) owns the scene being built; the lanes (`.codex/agents/*.toml`) own their craft. The shared contract of names and formats is `docs/v0.3-contract.md`.
+The studio is a set of long-lived Codex sessions, one per lane, in one checkout. The lead (`AGENTS.md`) owns the scene being built; the lanes (`.codex/agents/*.toml`) own their craft. The shared contract of names and formats is `docs/contract.md`.
 
 **Bus.** Sessions signal each other with `codex queue --session <lane> "<signal>"` through `tools/board/board.py signal`. A signal is one line that names a file; the content is in the file. `tools/board/supervisor.py` wakes idle lanes with open tasks, reopens claimed tasks whose owner stopped heartbeating, and stops everyone on `STOP`.
 

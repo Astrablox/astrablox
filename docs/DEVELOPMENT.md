@@ -1,6 +1,6 @@
 # Developing the framework
 
-Everything the agents do is plain text in this checkout. Change a lane in `.codex/agents/`, the lead's contract in `AGENTS.md`, the shared contract in `docs/v0.3-contract.md`, the tools in `tools/`, then run the checks below and commit.
+Everything the agents do is plain text in this checkout. Change a lane in `.codex/agents/`, the lead's contract in `AGENTS.md`, the shared contract in `docs/contract.md`, the tools in `tools/`, then run the checks below and commit.
 
 ## Tests
 

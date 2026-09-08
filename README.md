@@ -7,7 +7,7 @@
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/Website-astrablox.app-5f5fc4?style=for-the-badge&logo=google-chrome&logoColor=white" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/X-@astrabl0x-000000?style=for-the-badge&logo=x&logoColor=white" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.3.0"><img src="https://img.shields.io/badge/Release-v0.3.0-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v0.3.0"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/Release-v1.0.0-2ea44f?style=for-the-badge&logo=github&logoColor=white" alt="Release v1.0.0"/></a>
 </p>
 
 <p align="center">
@@ -49,7 +49,7 @@ game/VISION.md ──► story + design (one scene ahead) ──► lead: target
 
 ## The lanes
 
-Each lane is a Codex session started with `codex --session-name <lane>`; its craft is a TOML file in [`.codex/agents/`](.codex/agents/) and the skills it loads from [`.agents/skills/`](.agents/skills/). The lead's contract is [`AGENTS.md`](AGENTS.md); the names, formats and rules every lane shares are in [`docs/v0.3-contract.md`](docs/v0.3-contract.md).
+Each lane is a Codex session started with `codex --session-name <lane>`; its craft is a TOML file in [`.codex/agents/`](.codex/agents/) and the skills it loads from [`.agents/skills/`](.agents/skills/). The lead's contract is [`AGENTS.md`](AGENTS.md); the names, formats and rules every lane shares are in [`docs/contract.md`](docs/contract.md).
 
 | Lane | Owns |
 |---|---|
@@ -110,7 +110,7 @@ Optional keys: `OPENAI_API_KEY` for concept frames (the studio cannot start a sc
 ```
 astrablox/
 ├── AGENTS.md                 the lead's contract
-├── docs/v0.3-contract.md     shared names, formats and rules of every lane
+├── docs/contract.md     shared names, formats and rules of every lane
 ├── .codex/agents/*.toml      one file per lane · .codex/config.toml registers them
 ├── .agents/skills/           blender-craft, concept-frames, narrative-witcher, ui-premium, audio-pipeline, roblox-*
 ├── game/                     VISION.md, DESIGN.md, LORE.md, PLAN.md, scenes/<id>/{card,script,contract,gameplay}.md
@@ -147,7 +147,7 @@ The gate must pass before a commit that touches `AGENTS.md`, `.codex/` or `.agen
 
 **v0.2.** Every role rewritten around its craft; art direction with a style kit; set pieces as clips; the studio-developer role and the reporting tools.
 
-**v0.3.0.** The studio becomes autonomous: lanes as long-lived sessions on a file board with `codex queue` as the bus, target frames the studio generates itself, modelling in headless Blender, a design lane and a story lane built on CD Projekt Red's quest craft, a premium interface lane, an audio pipeline from open sources, and a dev lane that improves the rest after every scene. The scene above was built by the Blender pipeline from one target frame; the first full autonomous scene cycle on this version is still to be run, so its results are not claimed here. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
+**v1.0.0.** The studio becomes autonomous: lanes as long-lived sessions on a file board with `codex queue` as the bus, target frames the studio generates itself, modelling in headless Blender, a design lane and a story lane built on CD Projekt Red's quest craft, a premium interface lane, an audio pipeline from open sources, and a dev lane that improves the rest after every scene. The scene above was built by the Blender pipeline from one target frame; the first full autonomous scene cycle on this version is still to be run, so its results are not claimed here. See [RELEASE_NOTES.md](RELEASE_NOTES.md).
 
 ---
 
@@ -164,5 +164,5 @@ Framework code and documentation are released under the [MIT license](LICENSE). 
 <p align="center">
   <a href="https://astrablox.app/"><img src="https://img.shields.io/badge/🌐_Website-astrablox.app-5f5fc4?style=for-the-badge" alt="Website"/></a>
   <a href="https://x.com/astrabl0x"><img src="https://img.shields.io/badge/𝕏_Follow-@astrabl0x-000000?style=for-the-badge" alt="X"/></a>
-  <a href="https://github.com/Astrablox/astrablox/releases/tag/v0.3.0"><img src="https://img.shields.io/badge/⬇_Release-v0.3.0-2ea44f?style=for-the-badge" alt="Release"/></a>
+  <a href="https://github.com/Astrablox/astrablox/releases/tag/v1.0.0"><img src="https://img.shields.io/badge/⬇_Release-v1.0.0-2ea44f?style=for-the-badge" alt="Release"/></a>
 </p>

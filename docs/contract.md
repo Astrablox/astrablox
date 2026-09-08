@@ -1,10 +1,10 @@
-# AstraBlox v0.3 — shared contract of the studio
+# AstraBlox v1.0 — shared contract of the studio
 
 This file is the single source of the names, formats and rules that every lane, tool and document of the studio must use identically. A lane file or a tool that disagrees with this contract is wrong, not the contract. Written for the people and agents who build the studio; the lanes read the parts that concern them from their own files, which quote this contract in the same words.
 
 ## 1. What the studio is
 
-AstraBlox v0.3 is a fully autonomous game studio on Codex (GPT-6 Astra family). It builds a stylized-realistic open-world fantasy game for Roblox, scene by scene, 24/7, with no human in the loop: it designs the story and quests, generates its own concept frames, models the world, characters, creatures and effects in Blender, writes the gameplay in Luau, integrates everything in Roblox Studio, plays its own build, and improves its own lanes after every scene. The owner's voice exists once, in `game/VISION.md`; everything else the studio decides.
+AstraBlox v1.0 is a fully autonomous game studio on Codex (GPT-6 Astra family). It builds a stylized-realistic open-world fantasy game for Roblox, scene by scene, 24/7, with no human in the loop: it designs the story and quests, generates its own concept frames, models the world, characters, creatures and effects in Blender, writes the gameplay in Luau, integrates everything in Roblox Studio, plays its own build, and improves its own lanes after every scene. The owner's voice exists once, in `game/VISION.md`; everything else the studio decides.
 
 The bar for every artifact: it would pass in a game a strong studio ships. A concept frame that reads as generic concept art, a mesh that reads as a primitive or a scan, a UI that reads as a template, a sound that reads as random, a quest that reads as filler: each is a failure of the lane that produced it and is not accepted.
 

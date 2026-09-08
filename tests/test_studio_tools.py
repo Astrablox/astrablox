@@ -1,4 +1,4 @@
-"""Studio tools fixtures (v0.3): the static gate on this checkout, run_digest and session_digest on fakes.
+"""Studio tools fixtures (v1.0): the static gate on this checkout, run_digest and session_digest on fakes.
 Run: python -B tests/test_studio_tools.py
 """
 import json

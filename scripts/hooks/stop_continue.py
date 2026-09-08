@@ -1,4 +1,4 @@
-"""Stop hook of a lane session (v0.3). Keeps a lane working while the board has work for it.
+"""Stop hook of a lane session (v1.0). Keeps a lane working while the board has work for it.
 
 Codex fires this hook when a session is about to end its turn. Inside the studio every session runs
 with ASTRA_SESSION=<lane> (set by scripts/run_studio.*). The hook lets the turn end unless all of

@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gate for a scene's gameplay.md against game/DESIGN.md (docs/v0.3-contract.md §11, design).
+"""Gate for a scene's gameplay.md against game/DESIGN.md (docs/contract.md §11, design).
 
 Usage:
   design_check.py game/scenes/<id>/gameplay.md [--design game/DESIGN.md] [--text]

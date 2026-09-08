@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""contract_check.py: the objective gate of the story lane (docs/v0.3-contract.md §11).
+"""contract_check.py: the objective gate of the story lane (docs/contract.md §11).
 
 What it does: parses a scene's `script.md` and `contract.md` and reports every structural fault that
 would reach another lane as a missing name or a half-written quest. It checks form only. It cannot

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """build_publish.py: publish a build of a scene into builds/<n>/ so the lead, the judges and the owner
-look at one numbered folder instead of hunting renders across work dirs (docs/v0.3-contract.md §8).
+look at one numbered folder instead of hunting renders across work dirs (docs/contract.md §8).
 
 What it does: takes the next build number, copies the renders, the target frame, optional Studio
 captures and .rbxl into builds/<n>/, writes one side-by-side PNG per render against the target

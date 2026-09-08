@@ -1,6 +1,6 @@
 # board/ — the studio's shared desk
 
-Runtime state of the AstraBlox studio (docs/v0.3-contract.md §3–§8). Everything here except this
+Runtime state of the AstraBlox studio (docs/contract.md §3–§8). Everything here except this
 file and `STATE.md` is written by tools and ignored by git.
 
 | Path | What | Written by |

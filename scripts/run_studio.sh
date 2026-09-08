@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Start the AstraBlox v0.3 studio on Linux/macOS: one Codex session per lane plus the supervisor, each in
+# Start the AstraBlox v1.0 studio on Linux/macOS: one Codex session per lane plus the supervisor, each in
 # a tmux window of session "astra". Lanes and efforts come from tools/board/lanes.json (contract §2, §13).
 #
 #   scripts/run_studio.sh                  # all lanes + supervisor

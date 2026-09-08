@@ -55,7 +55,7 @@ def role_table(agents_md: str) -> dict[str, list[str]]:
     """Lane table of AGENTS.md (header '| Lane | Session | Owns | Extra markers |') -> {session: [markers]}.
 
     The lead has no lane file (AGENTS.md is its file) and is skipped. Every other lane must return the
-    contract's base markers (docs/v0.3-contract.md §5) plus the extra markers its row lists; a '/' in
+    contract's base markers (docs/contract.md §5) plus the extra markers its row lists; a '/' in
     the markers cell separates alternative marker sets (dev: FIX or AUDIT), all of which must exist."""
     rows, inside = {}, False
     for line in agents_md.splitlines():
@@ -80,7 +80,7 @@ def role_table(agents_md: str) -> dict[str, list[str]]:
 
 
 def role_name(label: str) -> str:
-    """Session name is the lane file name in v0.3; kept for callers that pass labels with modes."""
+    """Session name is the lane file name in v1.0; kept for callers that pass labels with modes."""
     return re.sub(r"\s*\(.*\)$", "", label).strip("` ")
 
 
