@@ -20,7 +20,7 @@ This is a capture/recording and bounded input foundation. It is not a real-time 
 
 ```powershell
 python -m scripts.player windows
-python -m scripts.player capture --hwnd 459576 --output gamemaster/logs/cycle-001/frame-001.png --mode instrumented --build-id ACCEPTED_BUILD --session-id RUN_SESSION --studio-id STUDIO_UUID
+python -m scripts.player capture --hwnd 459576 --output builds/1/captures/frame-001.png --mode instrumented --build-id ACCEPTED_BUILD --session-id RUN_SESSION --studio-id STUDIO_UUID
 ```
 
 `windows` lists only visible Roblox Studio windows. A capture target must be either an exact HWND or a unique `--title-match`; ambiguous/missing targets fail. HWND/PID identity is retained throughout recording. Minimized windows fail. The capture uses the selected window DC and `PrintWindow(PW_RENDERFULLCONTENT=2)`, not a desktop rectangle; unrelated overlapping apps are excluded. The complete Studio window may still contain its own assistant/output panes. Review before sharing, or supply a calibrated crop.
@@ -32,7 +32,7 @@ A successful Windows capture may still be stale or show Edit UI. Under the runti
 ## Real-time video
 
 ```powershell
-python -m scripts.player record --hwnd 459576 --output gamemaster/logs/cycle-001/run-01.mp4 --seconds 15 --fps 8 --mode instrumented --build-id ACCEPTED_BUILD --session-id RUN_SESSION --studio-id STUDIO_UUID
+python -m scripts.player record --hwnd 459576 --output builds/1/captures/run-01.mp4 --seconds 15 --fps 8 --mode instrumented --build-id ACCEPTED_BUILD --session-id RUN_SESSION --studio-id STUDIO_UUID
 ```
 
 Run only when the producer authorizes the capture scenario; recording may run alongside the same owner's ordinary inputs. It does not move the camera or issue input. Full-window dimensions or an explicit crop must be even for yuv420p. Duration is bounded to 0.25–120 seconds and rate to 1–30 FPS. Start at 8 FPS; lower it if capture cannot sustain that rate. The encoder receives newly captured, paced RGB frames through a rawvideo pipe. A timeout kills a stuck encoder; GDI/subprocess resources are released.
@@ -43,7 +43,7 @@ The JSON records each actual capture timestamp/hash, capture wall duration, nomi
 
 Prefer calibrated MCP keyboard batches. `protocol.keyboard_batch("W", 200)` builds keyDown/wait/keyUp using the producer-tested schema; it does not call MCP and cannot guarantee independent cleanup after a stalled MCP call. The producer must coordinate release on transport failures.
 
-For host input, the producer first grants PLAY_EXCLUSIVE, starts normal Play, confirms the exact Roblox Studio Client viewport is foreground/focused and calibrates its window-relative physical rectangle. The helper deliberately refuses to steal focus or start Play. A lease JSON is an explicit coordination assertion, not a cryptographic permission system or a substitute for `gamemaster/state.json` ownership. Example field values below are placeholders and expire immediately until regenerated:
+For host input, the studio lane first takes PLAY_EXCLUSIVE, starts normal Play, confirms the exact Roblox Studio Client viewport is foreground/focused and calibrates its window-relative physical rectangle. The helper deliberately refuses to steal focus or start Play. A lease JSON is an explicit coordination assertion, not a cryptographic permission system or a substitute for the board's task ownership. Example field values below are placeholders and expire immediately until regenerated:
 
 ```json
 {
@@ -125,7 +125,7 @@ Use a separate bounded capture worker process so a blocked native stop can be te
 The separate CLI is now implemented in `scripts/player/fast_record.py`; the original `record` CLI is unchanged:
 
 ```powershell
-.venv-wgc/Scripts/python -m scripts.player.fast_record --hwnd 459576 --output gamemaster/logs/cycle-001/wgc-preview-01.mp4 --seconds 20 --mode instrumented --build-id BUILD_ID --session-id SESSION_ID --studio-id STUDIO_UUID
+.venv-wgc/Scripts/python -m scripts.player.fast_record --hwnd 459576 --output builds/1/captures/wgc-preview-01.mp4 --seconds 20 --mode instrumented --build-id BUILD_ID --session-id SESSION_ID --studio-id STUDIO_UUID
 .venv-wgc/Scripts/python -m unittest scripts.player.test_fast_record -v
 ```
 

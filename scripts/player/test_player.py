@@ -128,8 +128,7 @@ class CaptureTests(unittest.TestCase):
         now = time.time()
         with tempfile.TemporaryDirectory() as folder:
             root = Path(folder)
-            (root / "gamemaster").mkdir()
-            (root / "gamemaster" / "STOP").touch()
+            (root / "STOP").touch()
             lease = dict(kind="PLAY_EXCLUSIVE", run_id="r", session_id="s", owner="p",
                          build_id="b", mode="instrumented", hwnd=1, expires_at=now + 30)
             action = dict(lease, kind="key", action_id="a", observation_id="o", observed_at=now,

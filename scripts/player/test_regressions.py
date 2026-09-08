@@ -64,8 +64,7 @@ class HostReviewRegressions(unittest.TestCase):
                     if change == "focus":
                         gui.GetForegroundWindow.return_value = 99
                     elif change == "STOP":
-                        (root / "gamemaster").mkdir()
-                        (root / "gamemaster" / "STOP").touch()
+                        (root / "STOP").touch()
                     elif change == "geometry":
                         gui.GetWindowRect.return_value = (1, 1, 641, 481)
                     else:

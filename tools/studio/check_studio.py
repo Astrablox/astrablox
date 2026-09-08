@@ -8,8 +8,8 @@ Exit 1 when any error is found. Checks:
   - every [agents."<name>"] in .codex/config.toml has a config_file that exists, parses as TOML,
     and carries name (== key), description, developer_instructions, a valid model_reasoning_effort;
   - every role file in .codex/agents/ is registered, and vice versa;
-  - every role row in the AGENTS.md role table names a registered role, and every marker the
-    table lists appears verbatim in that role's developer_instructions (the producer parses them);
+  - every lane in the AGENTS.md lane table (except lead) has a registered lane file, and the contract's
+    base report markers plus the lane's extra markers appear verbatim in its developer_instructions;
   - AGENTS.md stays under the Codex project-doc cap (32 KiB, warning above 28 KiB);
   - every .agents/skills/<name>/SKILL.md has frontmatter with name and description;
   - every `.agents/skills/<name>` and `tools/...` path mentioned in AGENTS.md, roles and skills exists,
@@ -38,7 +38,7 @@ def frontmatter(text: str) -> dict:
 def marker_key(cell: str) -> list[str]:
     """Markers as the producer parses them: text up to and including the first colon, or the first token."""
     keys = []
-    for part in [p.strip() for p in cell.split(",")]:
+    for part in [p.strip().strip("`").strip() for p in cell.split(",")]:
         if not part:
             continue
         if ":" in part:
@@ -48,24 +48,39 @@ def marker_key(cell: str) -> list[str]:
     return keys
 
 
+BASE_MARKERS = ["DELIVERED:", "EVIDENCE:", "ASSUMPTIONS:", "WEAKEST:", "OPEN:", "STATUS:"]
+
+
 def role_table(agents_md: str) -> dict[str, list[str]]:
+    """Lane table of AGENTS.md (header '| Lane | Session | Owns | Extra markers |') -> {session: [markers]}.
+
+    The lead has no lane file (AGENTS.md is its file) and is skipped. Every other lane must return the
+    contract's base markers (docs/v0.3-contract.md §5) plus the extra markers its row lists; a '/' in
+    the markers cell separates alternative marker sets (dev: FIX or AUDIT), all of which must exist."""
     rows, inside = {}, False
     for line in agents_md.splitlines():
         if not line.startswith("|"):
             inside = False
             continue
         cells = [c.strip() for c in line.strip().strip("|").split("|")]
-        if cells and cells[0] == "Role":
+        if cells and cells[0] == "Lane":
             inside = True
             continue
-        if not inside or len(cells) != 3 or set(cells[0]) <= {"-"}:
+        if not inside or len(cells) != 4 or set(cells[0]) <= {"-"}:
             continue
-        rows.setdefault(cells[0].strip("` "), []).extend(marker_key(cells[2]))
+        session = cells[1].strip("` ")
+        if session == "lead":
+            continue
+        extra = []
+        for alt in cells[3].split(" / "):
+            extra += marker_key(alt)
+        base = [] if session == "dev" else list(BASE_MARKERS)
+        rows[session] = base + [m for m in extra if m not in base]
     return rows
 
 
 def role_name(label: str) -> str:
-    """'art-director (REVIEW)' -> 'art-director'. Table rows are keyed by label so modes keep their own markers."""
+    """Session name is the lane file name in v0.3; kept for callers that pass labels with modes."""
     return re.sub(r"\s*\(.*\)$", "", label).strip("` ")
 
 
@@ -127,8 +142,8 @@ def main():
             if mk not in text:
                 errors.append(f"AGENTS.md table: marker {mk!r} for {label} not found in its developer_instructions")
     for name in roles:
-        if name not in table_roles:
-            errors.append(f"AGENTS.md table: registered role {name!r} has no row")
+        if name not in table_roles and not roles[name].get("description", "").startswith("Judge subagent:"):
+            errors.append(f"AGENTS.md table: registered agent {name!r} is neither a lane in the table nor a 'Judge subagent:'")
 
     skills_dir = root / ".agents/skills"
     skills = {}

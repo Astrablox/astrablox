@@ -93,21 +93,26 @@ do not rename it.
 
 ## 5. Where sounds come from
 
-- **Creator Store** through the Studio MCP asset search and insert. Free Store assets are usable
-  in experiences under the Store terms; record the id and the source. Any script inside an
-  inserted model stays disabled until the code reviewer has read it - free models are the known
-  malware vector.
-- **Too Lost catalogue** - thousands of tracks licensed for use in experiences, available in the
-  Creator Store music library since July 2026. This is the legitimate route to music.
-- **Own uploads** through the Open Cloud Assets API: `.mp3`, `.ogg`, `.wav`, `.flac`, up to
-  seven minutes, 20 MB per call, and a hard monthly cap (about a hundred audio uploads a month
-  for an ID-verified account, an order of magnitude fewer without). Everything passes moderation,
-  which takes time. Treat it as a harness capability: if the brief did not give you an upload
-  path, it is a blocker to name, not something to improvise.
+Choosing sources, licences, gates and generation belong to the audio lane and are written up in the
+`audio-pipeline` skill; this file is the in-engine craft. What you need to know here are the platform
+facts that decide whether a sound will play at all:
 
-For every source record: what it is, the asset id, where it came from, what it may be used for,
-and whether it actually loaded in this place. An asset that failed to load is a missing
-dependency with a name, not a placeholder.
+- **Creator Store audio** is used by asset id (`rbxassetid://<id>`); nothing is downloaded or
+  inserted. Its licence covers use inside a Roblox experience - it may not leave the platform, so it
+  cannot go into a trailer or an exported capture. Store music has been taken down under creators
+  before, so an id that loaded last month is not proof it loads today.
+- **Anything else has to be uploaded first**: `.mp3`, `.ogg`, `.wav`, `.flac`, up to 20 MB and seven
+  minutes, sample rate at or below 48 kHz. Through Studio and the Creator Hub an ID-verified creator
+  gets 2,000 audio uploads per 30 days (100 without verification); through the Open Cloud Assets API,
+  the channel an agent can drive unattended, 100 a month for an ID-verified user and 10 without.
+- **Uploaded audio is private by default** and plays only where its owner granted permission. A
+  source that is silent in Studio with no error is usually this, not a broken file.
+- A script inside any inserted model stays disabled until the code reviewer has read it; free models
+  are the known malware vector.
+
+For every source record what it is, the id, where it came from, what it may be used for, and whether
+it actually loaded here. An asset that failed to load is a missing dependency with a name, not a
+placeholder.
 
 ## 6. What counts as evidence that it sounds right
 
@@ -117,7 +122,9 @@ In descending order of strength:
    Only this supports a statement about how the mix sounds.
 2. **Runtime state** - in a running session: the asset loaded, playback position advancing, the
    right sources active in the right zone, the listener where you expect it. This proves the
-   plumbing, not the mix.
+   plumbing, not the mix. An `AudioAnalyzer` wired into the graph raises this one level: `RmsLevel`,
+   `PeakLevel` and `GetSpectrum` turn "it sounds loud" into a number that can be compared between
+   sources. `tools/audio/probe.luau` is that measurement packaged.
 3. **Edit-mode inspection** - instances, routing, levels, rolloff read back from the tree. This
    proves the build, nothing more. A template Sound with Playing checked in Edit proves nothing
    at all.
@@ -151,19 +158,16 @@ words for a reason, and a mix signed off from a properties table reaches the pla
   https://about.roblox.com/newsroom/2026/07/roblox-studio-fidelity-creator-interviews-twin-atlas-fluorlite-maximillian-ecos
 
 
-## Sources of sound the studio can call from a script
+## Modules worth knowing before you build a graph by hand
 
-- **ElevenLabs Sound Effects API** (`POST /v1/sound-generation`, model `eleven_text_to_sound_v2`,
-  0.5–30 s, `loop`, `prompt_influence`, WAV 48 kHz) and **Eleven Music** (`POST /v1/music`,
-  `music_length_ms` up to ten minutes, `composition_plan` by sections, `force_instrumental`). Commercial
-  use starts with the Starter plan; API billing about $0.12/min for effects and $0.15/min for music.
-  Some plans ask for a credit line; read the music terms before release.
-- **Roblox audio library and Too Lost catalogue** in the Creator Store: free, licensed only inside Roblox
-  (not for trailers on YouTube), searchable with duration filters.
-- Upload route matters: Open Cloud allows 100 audio uploads a month on an ID-verified account; Studio's
-  own uploader allows 2000 per 30 days. Bulk sound goes through Studio.
 - **AudioEngine** (`github.com/gmoddev/AudioEngine`, MIT, 2026-08): adaptive music from synchronised
   stems with state and parameter rules, buses with ducking, ambience emitters, voice budgets, on the
   new Audio API. New and unproven; architecturally the right shape for a boss fight.
-- **Resonance** (Creator Store 107564850777477): one-object wrapper over the new Audio API with falloff
-  curves and a spectrum analyser.
+- **Resonance** (Creator Store 107564850777477): one-object wrapper over the new Audio API with
+  falloff curves and a spectrum analyser.
+- Zone modules (ZonePlus and its faster successors) exist for driving ambience and music changes from
+  volumes; the lifecycle code they replace belongs to the code lane either way.
+
+No paid service, subscription library or hosted generation API is used in this studio, whatever its
+quality. Where a sound has to be made rather than found, it is made locally with open weights - see
+the `audio-pipeline` skill, `references/local-generation.md`.

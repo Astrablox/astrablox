@@ -1,66 +1,52 @@
 # Setup
 
-Three steps, then you talk to it. Windows only for now: Roblox Studio's MCP server and the launcher are Windows tools.
+One machine runs the whole studio: Windows with a GPU, Roblox Studio, Blender and Codex. Linux/macOS can run every lane except `studio` (Roblox Studio is Windows/macOS only; the MCP server ships with Studio).
 
 ## 1. Codex CLI
 
 ```powershell
 npm install -g @openai/codex
-codex login          # browser login with your ChatGPT account
-codex --version      # 0.153 or newer
+codex login
+codex --version      # 0.153 or newer; codex queue (the bus between lanes) needs 0.149+
 ```
 
-Any ChatGPT subscription works. Pro has the headroom for a long build; inside `codex`, `/status` shows your plan and remaining quota.
+## 2. Blender 4.x
 
-## 2. Roblox Studio
+Install from blender.org. `python tools/blender/blender.py` finds it on PATH or in the standard install folder; otherwise set `BLENDER=<path to blender.exe>`. Check: `python tools/blender/blender.py --help`.
 
-1. Install or update Roblox Studio (the MCP server ships with Studio since spring 2026).
-2. Open a place and **publish it** (File → Publish to Roblox As…). The MCP server only works on a published place.
-3. Assistant panel → `…` → **Manage MCP Servers** → turn on **Enable Studio as MCP server**.
-4. `%LOCALAPPDATA%\Roblox\mcp.bat` now exists. The project config already points at it; nothing to edit.
+## 3. Roblox Studio
 
-## 3. Open the studio
+1. Install or update Roblox Studio.
+2. Open a place and publish it (File → Publish to Roblox As…). MCP only works on a published place.
+3. Assistant panel → `…` → Manage MCP Servers → Enable Studio as MCP server. `%LOCALAPPDATA%\Roblox\mcp.bat` now exists; `.codex/config.toml` already points at it.
+
+## 4. Python 3.11+
+
+`python --version`. Optional: `pip install pillow numpy trimesh pygltflib` for thumbnails and mesh inspection; `npm i -g @gltf-transform/cli` for mesh optimisation. The luau gate installs itself: `tools/check/install.ps1`.
+
+## 5. Keys (optional, but the studio cannot generate target frames without the first one)
+
+Set in the environment of the terminal that starts the studio: `OPENAI_API_KEY` (concept frames), `TRIPO_API_KEY` (image-to-3D form guides), `ROBLOX_API_KEY` + `ROBLOX_CREATOR_USER_ID` or `ROBLOX_CREATOR_GROUP_ID` (Open Cloud uploads). Never write keys into files in the checkout.
+
+## 6. The vision
+
+Edit `game/VISION.md`. It is the only place the owner speaks: the game, the audience, the bar, what it must never do, and what may leave the machine (publishing, uploads, spending). Everything else the studio decides.
+
+## 7. Start
 
 ```powershell
 git clone https://github.com/Astrablox/astrablox.git
 cd astrablox
-codex
+.\scripts\run_studio.ps1
 ```
 
-Codex asks whether to trust the folder. Say yes: trust is what loads `.codex/config.toml` (the Studio connection and the 16 roles). Then type your game:
+One terminal per lane opens (`codex --session-name <lane>`), plus the supervisor. Say yes to trusting the folder in each: trust loads `.codex/config.toml`. The lead starts the first scene. Watch `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/`.
 
-```
-Horror escape. 3 floors underground, keycards, flickering lights, a monster that hunts you.
-```
-
-To check the connection first, ask `list the Roblox Studios you can see`. The answer is your open place with its id. Studio's Manage MCP Servers panel shows a green indicator.
-
-## Let it run without you
-
-```powershell
-.\scripts\run.ps1 -Concept "Medieval dungeon crawler. 5 rooms, torches, a boss at the end."
-```
-
-The launcher starts the same studio with a budget (defaults: 60 minutes, 12 continuations) and a Stop hook keeps the session going until the budget runs out. Useful flags:
-
-| Flag | Meaning |
-|---|---|
-| `-MaxMinutes 90 -MaxContinues 20` | bigger budget |
-| `-Resume` | continue the last run |
-| `-ClearStop` | start a new run after `stop.ps1` was used |
-| `-Headless` | no interactive terminal, JSON events on stdout |
-| `-TrustRepositoryHooks` | accept the repository's Stop hook without the trust prompt (read `.codex/hooks.json` first) |
-
-`.\scripts\stop.ps1` ends it: no further continuations. Python 3.11+ is required for the hook.
+Talk to the lead while it runs: `codex queue --session lead "Latest owner instruction: ..."`. Stop everything: `.\scripts\run_studio.ps1 -Stop` (writes `STOP`; every lane finishes its card and halts). A subset: `.\scripts\run_studio.ps1 -Lanes lead,world,story`.
 
 ## If Studio does not connect
 
-- **Start Codex before you open Studio.** Studio attaches to the MCP proxy only if the proxy is already running. Close Studio, start `codex`, reopen the place.
-- **The place must be published.** Local unsaved baseplates do not expose MCP.
-- **One Studio window with MCP enabled at a time.** Several open places make the target ambiguous.
-- **`mcp.bat` missing** means the toggle in step 2 is off or Studio is outdated.
-- **Login fails with "Authorization code may not be used from this device"**: your network changes public IP between requests. Switch to another network and log in again.
-
-## Developing the framework
-
-Tests, optional capture dependencies and what is tracked: [docs/DEVELOPMENT.md](docs/DEVELOPMENT.md).
+- Start Codex before you open Studio: Studio attaches to the MCP proxy only if it is already running.
+- The place must be published.
+- One Studio window with MCP enabled at a time.
+- `list the Roblox Studios you can see` in the `studio` session answers with the open place and its id.

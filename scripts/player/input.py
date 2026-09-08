@@ -111,7 +111,7 @@ def _execute(action_path, lease_path, result_path):
     lease_path = Path(lease_path)
     lease = json.loads(lease_path.read_text(encoding="utf-8"))
     validate_action(action, lease)
-    if (ROOT / "gamemaster" / "STOP").exists():
+    if (ROOT / "STOP").exists():
         raise ControlFailure("STOP is set")
     target = select_window(hwnd=action["hwnd"])
     if target["pid"] != lease.get("pid") or "roblox studio" not in target["title"].casefold():
@@ -151,7 +151,7 @@ def _execute(action_path, lease_path, result_path):
             raise ControlFailure("sender fenced or lost ownership token")
         if guard is None or guard.poll() is not None or time.monotonic() >= deadline:
             raise ControlFailure("watchdog exited or deadline reached")
-        if (ROOT / "gamemaster" / "STOP").exists():
+        if (ROOT / "STOP").exists():
             raise ControlFailure("STOP is set")
         current_lease = json.loads(lease_path.read_text(encoding="utf-8"))
         if current_lease != lease:

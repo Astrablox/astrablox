@@ -3,69 +3,55 @@
 command = "cmd.exe"
 args = ["/d", "/s", "/c", "scripts\\roblox-mcp.cmd"]
 
-# Specialist roles. Descriptions tell the producer when to call each one; craft lives in the
-# role file and in the repository skills under .agents/skills/.
+# Lanes. One long-lived session per lane (`codex --session-name <lane>`); the lead is AGENTS.md.
+# Descriptions tell the lead and the supervisor what each lane owns; craft lives in the lane file and the skills.
 
-[agents."roblox-architect"]
-description = "First step of a new game or new scope: turns the owner's concept into the loop, zones and route with reveals, systems and interfaces, ownership table, acceptance scenarios and build order. Text only. Runs before art-director DIRECTION."
-config_file = "agents/roblox-architect.toml"
+[agents."world"]
+description = "The world lane (session `world`): kit pieces, hero structures, terrain, vegetation and Blender lighting matched to the scene's target frame, exported as verified GLB. Works from task cards on the board; reports with the contract markers."
+config_file = "agents/world.toml"
 
-[agents."art-director"]
-description = "Two modes named in the brief. DIRECTION: after architecture and before finish work, picks the visual direction, palette, material language, the style kit found through the tools, lighting mood and named acceptance views. REVIEW: a fresh instance after builders and atmosphere, judges captures only and returns addressed notes; never the instance that wrote the direction."
-config_file = "agents/art-director.toml"
+[agents."creatures"]
+description = "The creatures lane (session `creatures`): player accessories and clothing textures, NPC and monster models, R15 / Auto Setup rigs, animations, verified in Studio."
+config_file = "agents/creatures.toml"
 
-[agents."world-builder"]
-description = "Builds one zone end to end: playable blockout during systems work, then the rebuild to the art direction with the style kit, architectural detail, set dressing and terrain, and the readback of its acceptance views. Spawn one instance per zone under EDIT_SHARED."
-config_file = "agents/world-builder.toml"
+[agents."vfx"]
+description = "The effects lane (session `vfx`): cues from anticipation to dissipate, mesh effects and flipbooks in Blender, particles, beams, camera work and the client presentation code in Roblox; sequences for set pieces; judged by clips."
+config_file = "agents/vfx.toml"
 
-[agents."luau-scripter"]
-description = "Implements game systems in Studio: server-authoritative progress and combat, validated remotes, functional UI logic, and the presentation event interface that vfx-designer consumes. Runs in parallel with blockout; its code goes to luau-reviewer."
-config_file = "agents/luau-scripter.toml"
+[agents."code"]
+description = "The code lane (session `code`): controller, abilities, combat, enemy AI, quest logic, saves and remotes built to game/DESIGN.md and the scene's gameplay.md; publishes the presentation interface; luau gate and independent review before every report."
+config_file = "agents/code.toml"
 
-[agents."enemy-designer"]
-description = "Creatures and combat: rig, AI states and telegraphs, pathfinding, server damage authority, and the combat events that vfx-designer and sound-designer react to. Call before the first playable whenever the concept has threats."
-config_file = "agents/enemy-designer.toml"
+[agents."design"]
+description = "The design lane (session `design`): core loop and pillars, system specs in game/DESIGN.md, per-scene gameplay.md with encounters, mechanics and feel targets, tuning from playtest and completion reports. Works one scene ahead with story."
+config_file = "agents/design.toml"
 
-[agents."lighting-director"]
-description = "After zones are rebuilt: global lighting, atmosphere, post-processing, sky and local light as composition, captured before and after on the acceptance views. Needs EDIT_EXCLUSIVE. Runs before vfx-designer."
-config_file = "agents/lighting-director.toml"
+[agents."story"]
+description = "The story lane (session `story`): lore bible, ordered scene plan, per-scene script (places, NPCs with schedules and lines, quests with choices and consequences) and the scene contract every other lane builds against. Works one scene ahead."
+config_file = "agents/story.toml"
 
-[agents."vfx-designer"]
-description = "Event cues end to end: particles, beams, mesh VFX, light flashes, camera shake, timing and the client presentation code that reacts to the scripter's events. Call after lighting for spells, gates, bosses, reveals and combat feel; its code goes to luau-reviewer."
-config_file = "agents/vfx-designer.toml"
+[agents."studio"]
+description = "The studio lane (session `studio`): imports GLB into Roblox Studio, assembles the scene to the Blender layout, matches Roblox lighting to the render, places audio, runs playtests and the computer-player completion under the exclusive lease, captures and exports builds."
+config_file = "agents/studio.toml"
 
-[agents."sound-designer"]
-description = "Ambient bed, spot ambiences, buses and reverb zones, combat sound layers driven by the presentation events. Call after vfx-designer; reports what was actually heard."
-config_file = "agents/sound-designer.toml"
+[agents."ui"]
+description = "The interface lane (session `ui`): HUD, menus, prompts, dialogue and quest screens designed to a generated mockup, built with the style sheet and UI art assets, checked at phone, tablet and desktop viewports; client UI code."
+config_file = "agents/ui.toml"
 
-[agents."ui-designer"]
-description = "HUD and menus to the art direction: hierarchy, states, feedback, desktop and touch layouts, UI motion. Call after systems exist; any code it adds goes to luau-reviewer."
-config_file = "agents/ui-designer.toml"
+[agents."audio"]
+description = "The audio lane (session `audio`): sound effects, ambiences, music and adaptive layers from open sources and local generation only, passed through objective gates, catalogued with provenance, delivered as a placement package for studio."
+config_file = "agents/audio.toml"
 
-[agents."story-teller"]
-description = "Gives places and events their purpose for environment storytelling and presentation, and writes the short in-game text. Call when the concept carries narrative, after architecture and before builders finish."
-config_file = "agents/story-teller.toml"
+[agents."dev"]
+description = "The dev lane (session `dev`): the studio's own architect. After each accepted scene, or on the owner's request, diagnoses the run from digests and trajectories, fixes lane files, skills and tools on the right level and rewrites files whole; a fresh AUDIT instance judges every change. Never edits the game."
+config_file = "agents/dev.toml"
+
+# Judge subagents: spawned by a lane by name, never a session (docs/v0.3-contract.md §8).
 
 [agents."luau-reviewer"]
-description = "Independent read-only review of every executable script in the DataModel, including client presentation and UI code, after the last code change. Returns addressed findings and a verdict."
+description = "Judge subagent: independent read-only review of every executable script in the place, spawned by the code lane after its gate; returns addressed findings and a verdict, never edits."
 config_file = "agents/luau-reviewer.toml"
 
-[agents."roblox-playtester"]
-description = "Independent structural and behavioural QA against the architecture's acceptance scenarios under PLAY_EXCLUSIVE: first playable after the integration barrier, and final acceptance before computer-player."
-config_file = "agents/roblox-playtester.toml"
-
 [agents."computer-player"]
-description = "Earned completion of the accepted build with ordinary controls under PLAY_EXCLUSIVE, plus feel observations from frames. Last gameplay gate before capture and release."
+description = "Judge subagent: earned completion of the accepted build with ordinary controls under the studio lane's exclusive lease, plus feel observations from frames; never edits, never teleports."
 config_file = "agents/computer-player.toml"
-
-[agents."showcase-photographer"]
-description = "Trailer-grade captures of an accepted build, bound to its build id, on the acceptance views and a shot list. Call after acceptance, before release."
-config_file = "agents/showcase-photographer.toml"
-
-[agents."roblox-publisher"]
-description = "Exports, uploads or publishes only a build the owner explicitly released; reports exported, uploaded, published and join-verified as separate states."
-config_file = "agents/roblox-publisher.toml"
-
-[agents."studio-developer"]
-description = "Call when the task is about the studio itself, not the game: a role, skill, tool, brief, report or the producer contract produced a weak or wrong result; the owner brought feedback about how an agent worked; a role, skill or tool is missing; a run must be read as a trajectory and diagnosed. FIX (default) reads the run evidence, builds the inventory, fixes on the right level and rewrites files whole; AUDIT is a fresh instance that judges the rewritten files only and returns ACCEPT / RETURN. Never edits the game or Studio, never publishes or pushes."
-config_file = "agents/studio-developer.toml"

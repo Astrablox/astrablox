@@ -14,11 +14,19 @@ __pycache__/
 *.py[cod]
 .pytest_cache/
 
-# Game/project state, inbox and evidence are private runtime data.
-# Keep the reusable Studio audit tooling as source.
-gamemaster/*
-!gamemaster/tools/
-inbox/
+# Runtime state of the studio: board, builds, generated assets, target frames. Templates stay tracked.
+board/tasks/
+board/reports/
+board/heartbeats/
+board/*.log
+board/render.lock
+builds/
+assets/*
+!assets/library/
+game/scenes/*/target*.png
+game/scenes/*/sheets/
+game/scenes/*/ui/
+STOP
 scripts/player/.runtime/
 
 # Reviewed large media belongs in separately selected release assets.
@@ -29,3 +37,14 @@ tools/check/luau-lsp
 tools/check/luau-lsp.exe
 tools/check/globalTypes*.d.luau
 assets-work/
+
+# v0.3 runtime state (docs/v0.3-contract.md §8): boards, builds, generated assets, target frames
+board/tasks/
+board/reports/
+board/heartbeats/
+board/*.log
+builds/
+assets/*
+!assets/library/
+game/scenes/*/target*.png
+STOP

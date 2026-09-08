@@ -1,41 +1,17 @@
-# Architecture
+# Architecture (v0.3)
 
-The Game Master (AGENTS.md) owns scope, sequencing, Studio leases, integration and acceptance.
-Specialists receive bounded briefs and own disjoint zones, folders or scripts. Parallel writers
-use Edit mode only; Play, player input and camera control have one exclusive owner after the
-Edit barrier.
+The studio is a set of long-lived Codex sessions, one per lane, in one checkout. The lead (`AGENTS.md`) owns the scene being built; the lanes (`.codex/agents/*.toml`) own their craft. The shared contract of names and formats is `docs/v0.3-contract.md`.
 
-Order of work for a new game: architecture (loop, zones, route, ownership, acceptance) → art
-direction with a style kit and named acceptance views → systems and per-zone blockout in
-parallel → integration barrier and first playable → per-zone rebuild to the direction →
-lighting → effects → sound → UI → narrative → independent art review from captures, code
-review, QA, earned player completion → capture and authorized release. The definition of done
-and the routing of small fixes are in AGENTS.md.
+**Bus.** Sessions signal each other with `codex queue --session <lane> "<signal>"` through `tools/board/board.py signal`. A signal is one line that names a file; the content is in the file. `tools/board/supervisor.py` wakes idle lanes with open tasks, reopens claimed tasks whose owner stopped heartbeating, and stops everyone on `STOP`.
 
-Each interactable has one physical author and one runtime-state writer. Review gates use
-observed behaviour and captures: server-authoritative state, collision and traversal, reset and
-replay, composition against the acceptance views, player completion. Reports do not substitute
-for inspecting the DataModel, the captures and the scenario.
+**Board.** Task cards in `board/tasks/` (goal, input, output, acceptance, must survive), reports in `board/reports/` with the contract's markers, heartbeats, `queue.log`, and `board/STATE.md`, one page rewritten after every build.
 
-Craft reference lives in `.agents/skills/` and is loaded by roles on demand; role files in
-`.codex/agents/` hold responsibility, algorithm, criteria and report format.
+**Scene cycle.** Story and design work one scene ahead. For the current scene the lead generates target frames and sheets (`concept-frames` skill), accepts exemplars, dispatches tiling, hero, creatures, code, effects, interface and audio as cards, assembles in Blender, publishes a numbered build with a side-by-side, dispatches integration to `studio` (import, lighting matched to the render, playtest, player completion, captures), accepts the scene by evidence, and signals `dev` for the retro. Readiness states (`source → rendered → accepted → baked → glb_verified → in_scene → in_studio → played`) live in provenance files and the scene card and reset when a piece changes.
 
-Runtime state lives under `gamemaster/` and is separate from the portable framework.
-`scripts/run.ps1` creates a finite run record; the Stop hook may continue the same authorized
-session only while its count and deadline allow. The reusable framework is AGENTS.md,
-.codex/agents/, .agents/skills/, scripts/, gamemaster/tools/, tests/ and docs/. The owner's
-concept determines genre and scope; docs/examples/ is historical.
+**Blender and Roblox.** Everything that is a mesh or an animation is made in headless Blender through `tools/blender/` (fixed-camera renders, baking, GLB export with re-import verification, layout export). Everything that behaves lives in Roblox Studio through its MCP server: gameplay, AI, quests, lighting, audio, interface. `layout.json` from Blender is the placement `studio` reproduces.
 
-The studio itself has an owner: `studio-developer` (`.codex/agents/studio-developer.toml`). In mode
-IMPROVE, or on any request about how an agent worked, the producer spawns it in FIX mode with the
-owner's words, the cycle folder and the paths; then a fresh instance in AUDIT mode judges only the
-changed files. `tools/studio/` gives both the evidence: `run_digest.py` (a cycle's reports against
-the markers the producer expects), `session_digest.py` (Codex session JSONL as trajectories) and
-`check_studio.py` (the static gate every change must pass). `docs/journal.md` records every change
-to the studio with its reason and how to verify it; `docs/inventory.md` numbers the problems and
-<<<<<<< HEAD
-their fates.
-=======
-their fates. `tools/assets/`, `assets-library/` and `tools/check/` are the roles' own tools for real
-assets and checked code; `tools/assets/README.md` describes them.
->>>>>>> harness-local
+**Gates before judges.** GLB verification, luau-lsp, Lune tests, audio gates, the story contract check and Studio import errors are checked by tools; only then a fresh subagent judges renders, captures or clips against the target. Reports are never accepted on their own.
+
+**Self-improvement.** After each accepted scene the `dev` lane reads the scene digest (`tools/studio/run_digest.py`), session trajectories (`session_digest.py`) and the retro, fixes lanes, skills and tools, and a fresh instance audits the change; `studio/journal.md` and `studio/inventory.md` keep the history. Changes apply from the next scene.
+
+**Retired from v0.2.** The producer-as-dispatcher, the fifteen specialist roles as subagents, `gamemaster/` and the bounded launcher modes. Roles became lanes; `board/` and `game/` replaced `gamemaster/`; the Stop hook remains as the continuation mechanism inside a session.
