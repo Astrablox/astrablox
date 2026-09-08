@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-  Start the AstraBlox v1.0 studio: one Codex session per lane plus the supervisor, each in its own window.
+  Start the AstraBlox v1.0 studio: one Codex session per lane, each in its own window (the supervisor only with -Supervisor).
 .DESCRIPTION
   Lanes and their reasoning effort come from tools/board/lanes.json (contract §2, §13). For each lane a new
   PowerShell window runs `codex --session-name <lane> -c model_reasoning_effort=<effort>
@@ -9,8 +9,8 @@
   Sessions are long-lived: signals between them go through `codex queue` (see board/README.md).
 .PARAMETER Lanes
   Subset of lanes to start, e.g. -Lanes lead,world. Default: all lanes in lanes.json.
-.PARAMETER NoSupervisor
-  Do not open the supervisor window.
+.PARAMETER Supervisor
+  Also open the supervisor (watchdog) window; off by default, useful for unattended 24/7 runs.
 .PARAMETER Stop
   Create the STOP file in the checkout root; the supervisor sends STOP to every session and exits.
 .PARAMETER ClearStop
@@ -25,7 +25,7 @@
 [CmdletBinding()]
 param(
     [string[]]$Lanes = @(),
-    [switch]$NoSupervisor,
+    [switch]$Supervisor,
     [switch]$Stop,
     [switch]$ClearStop,
     [switch]$DryRun
@@ -68,7 +68,7 @@ foreach ($lane in $selected) {
     Start-Window -title "astra:$name" -command $cmd
     Start-Sleep -Milliseconds 400
 }
-if (-not $NoSupervisor) {
+if ($Supervisor) {
     Start-Window -title "astra:supervisor" -command "`$env:ASTRA_SESSION = 'supervisor'; $python tools\board\supervisor.py"
 }
-Write-Host ("started: " + (($selected | ForEach-Object { $_.name }) -join ", ") + $(if ($NoSupervisor) { "" } else { ", supervisor" }))
+Write-Host ("started: " + (($selected | ForEach-Object { $_.name }) -join ", ") + $(if ($Supervisor) { ", supervisor" } else { "" }))

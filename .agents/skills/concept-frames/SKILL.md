@@ -9,7 +9,7 @@ A model that sees its target hits it; a model that builds from words builds an a
 
 ## The tool
 
-`python tools/assets/concept.py --slug <name> --subject "<prompt>" [--bible <style file>] [--pose tpose|apose] [--framing ...]` writes the image and a provenance record under `assets/refs/<slug>/`. It needs `OPENAI_API_KEY` in the environment; without it the tool prints the prompt it would send and exits, which is a blocker to report, not a reason to build without a target. The style bible is `game/VISION.md` plus the previous builds' side-by-sides; pass the frame of the previous scene as a reference image when the model accepts one, so the world stays one world.
+Generate with the image-generation tool of your own Codex session first: it is the fastest loop, it accepts a reference image, and it needs no key. Save every accepted picture into the scene folder and write its prompt into a `provenance.json` next to it (prompt, reference used, date), because a picture without its prompt cannot be regenerated consistently. Only when the session has no image tool, use `python tools/assets/concept.py --slug <name> --subject "<prompt>" [--bible <style file>] [--pose tpose|apose]`, which calls an image model through `OPENAI_API_KEY` and writes the image and provenance under `assets/refs/<slug>/`; without a tool and without a key, report the blocker instead of building without a target. The style bible is `game/VISION.md` plus the previous builds' side-by-sides; pass the frame of the previous scene as the reference image, so the world stays one world.
 
 ## Four kinds of picture, four prompt shapes
 

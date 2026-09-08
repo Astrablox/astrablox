@@ -59,7 +59,7 @@ Parallelism follows one rule: independent work runs side by side, work that need
 
 ## Cost and the machine
 
-One GPU serves the whole studio. Long operations (renders above preview quality, bakes, video, batch imports) start with a measurement: a probe frame, a single piece, a short clip; the report states the expected cost before the full run. A render lock (`board/render.lock`, written by the Blender toolkit) is respected: one heavy Blender job at a time. Exclusive Studio operations (Play, input, camera) have one owner at a time, the `studio` lane; other lanes only write into Studio under a shared edit lease named on their card.
+One GPU serves the whole studio. Long operations (renders above preview quality, bakes, video, batch imports) start with a measurement: a probe frame, a single piece, a short clip; the report states the expected cost before the full run. A render lock (`board/render.lock`, written by the Blender toolkit) is respected: one heavy Blender job at a time. Modelling may go through the session's Blender MCP or bpy scripts; the toolkit's renders, bakes, export verification and layout are the gates either way. Exclusive Studio operations (Play, input, camera) have one owner at a time, the `studio` lane; other lanes only write into Studio under a shared edit lease named on their card.
 
 ## Recovery
 

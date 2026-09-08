@@ -129,7 +129,7 @@ Stylized realism as Roblox's best studios ship it, anchored by the target frames
 
 ## 10. Roblox and Blender constraints (engine facts)
 
-Mesh ≤ 20,000 triangles, file ≤ 20 MB, textures above 1024 downsampled (hero at 2048 only when needed), one texture set per mesh, Principled BSDF with image textures only (bake before export), metres with origin at base centre, Y-up on export, modular pieces on a grid with matching end profiles; no custom LOD chains. Blender runs headless through `tools/blender/` scripts; the GUI and MCP bridges are not used. Roblox is driven through Studio MCP (`roblox-studio-mcp` skill) with leases: one exclusive Play/input/camera owner at a time.
+Mesh ≤ 20,000 triangles, file ≤ 20 MB, textures above 1024 downsampled (hero at 2048 only when needed), one texture set per mesh, Principled BSDF with image textures only (bake before export), metres with origin at base centre, Y-up on export, modular pieces on a grid with matching end profiles; no custom LOD chains. Modelling in Blender happens through whatever the session has: a Blender MCP bridge, or bpy scripts run headlessly; the gates always run through `tools/blender/` (fixed-camera renders under reference light, baking, GLB export with re-import verification, `layout.json`, side-by-side), because a render that cannot be compared and a mesh that was not verified do not count. Roblox is driven through Studio MCP (`roblox-studio-mcp` skill) with leases: one exclusive Play/input/camera owner at a time.
 
 ## 11. Gates (objective before judgement)
 

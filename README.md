@@ -33,7 +33,7 @@
 AstraBlox is a studio, not a script. Long-lived Codex sessions, one per lane, work in the same checkout and talk to each other over `codex queue`. A lead owns the scene being built; the lanes own their craft. The studio generates its own target frames, models toward them in headless Blender, imports into Roblox Studio through its MCP server, plays the result with ordinary controls, and after every accepted scene a `dev` lane reads what happened and rewrites the lanes that fell short. Nothing waits for a human: the owner's voice lives in one file, `game/VISION.md`.
 
 - **The picture comes first.** Every scene, piece and screen is built toward an image the studio generated and judged, then compared side by side after every build.
-- **Blender for everything that is a mesh, Roblox for everything that behaves.** Kits, heroes, creatures, effects and interface art are modelled and baked headlessly; gameplay, AI, quests, lighting and audio live in Studio.
+- **Blender for everything that is a mesh, Roblox for everything that behaves.** Kits, heroes, creatures, effects and interface art are modelled in Blender (through the session's Blender MCP or bpy scripts) and pass through the toolkit's gates: fixed-camera renders, baked materials, verified GLB, a layout for Studio; gameplay, AI, quests, lighting and audio live in Studio.
 - **Proof, not reports.** A piece has a readiness state that resets when it changes; a scene is done when the Studio capture reads as the target frame and the route is completed by the player agent.
 - **It improves itself.** The `dev` lane keeps a journal and a numbered problem inventory, fixes prompts, skills and tools after each scene, and a fresh audit judges every fix.
 
@@ -86,7 +86,7 @@ Each lane is a Codex session started with `codex --session-name <lane>`; its cra
 
 The lead reads the vision, dispatches the first story and design cards, generates target frames and starts the first scene. Progress is visible in `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/` (renders, side-by-sides, Studio captures, `CHANGES.md`). `codex agents` shows every session; `codex queue --session lead "..."` is how you talk to the lead while it runs.
 
-Optional keys: `OPENAI_API_KEY` for concept frames (the studio cannot start a scene without a target frame), `TRIPO_API_KEY` for image-to-3D form guides, `ROBLOX_API_KEY` for Open Cloud uploads. Without them the corresponding tools print what they would do and the lane reports the blocker.
+Optional keys: `TRIPO_API_KEY` for image-to-3D form guides, `ROBLOX_API_KEY` for Open Cloud uploads, `OPENAI_API_KEY` only if your Codex session has no image-generation tool (target frames are generated with the session's own tool first). Without a key the corresponding tool prints what it would do and the lane reports the blocker.
 
 ---
 

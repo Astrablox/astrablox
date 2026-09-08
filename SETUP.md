@@ -12,7 +12,7 @@ codex --version      # 0.153 or newer; codex queue (the bus between lanes) needs
 
 ## 2. Blender 4.x
 
-Install from blender.org. `python tools/blender/blender.py` finds it on PATH or in the standard install folder; otherwise set `BLENDER=<path to blender.exe>`. Check: `python tools/blender/blender.py --help`.
+Install from blender.org. Lanes model through the Blender MCP your Codex session has, or through bpy scripts; either way the toolkit's gates run headlessly: `python tools/blender/blender.py` finds Blender on PATH or in the standard install folder; otherwise set `BLENDER=<path to blender.exe>`.
 
 ## 3. Roblox Studio
 
@@ -24,9 +24,9 @@ Install from blender.org. `python tools/blender/blender.py` finds it on PATH or 
 
 `python --version`. Optional: `pip install pillow numpy trimesh pygltflib` for thumbnails and mesh inspection; `npm i -g @gltf-transform/cli` for mesh optimisation. The luau gate installs itself: `tools/check/install.ps1`.
 
-## 5. Keys (optional, but the studio cannot generate target frames without the first one)
+## 5. Keys (optional)
 
-Set in the environment of the terminal that starts the studio: `OPENAI_API_KEY` (concept frames), `TRIPO_API_KEY` (image-to-3D form guides), `ROBLOX_API_KEY` + `ROBLOX_CREATOR_USER_ID` or `ROBLOX_CREATOR_GROUP_ID` (Open Cloud uploads). Never write keys into files in the checkout.
+Target frames, sheets and mockups are generated with the image tool of the Codex session itself; `OPENAI_API_KEY` is needed only if your session has none. `TRIPO_API_KEY` enables image-to-3D form guides; `ROBLOX_API_KEY` + `ROBLOX_CREATOR_USER_ID` or `ROBLOX_CREATOR_GROUP_ID` enable Open Cloud uploads when the import path needs them. Set keys in the environment of the terminal that starts the studio; never write them into files in the checkout.
 
 ## 6. The vision
 
@@ -40,7 +40,7 @@ cd astrablox
 .\scripts\run_studio.ps1
 ```
 
-One terminal per lane opens (`codex --session-name <lane>`), plus the supervisor. Say yes to trusting the folder in each: trust loads `.codex/config.toml`. The lead starts the first scene. Watch `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/`.
+One terminal per lane opens (`codex --session-name <lane>`): ten named Codex sessions that talk over `codex queue`. Add `-Supervisor` for the watchdog when the studio runs unattended; `-Lanes lead,story,design,world,code` for a smaller first run. Say yes to trusting the folder in each: trust loads `.codex/config.toml`. The lead starts the first scene. Watch `board/STATE.md`, `game/scenes/<id>/card.md` and `builds/<n>/`.
 
 Talk to the lead while it runs: `codex queue --session lead "Latest owner instruction: ..."`. Stop everything: `.\scripts\run_studio.ps1 -Stop` (writes `STOP`; every lane finishes its card and halts). A subset: `.\scripts\run_studio.ps1 -Lanes lead,world,story`.
 

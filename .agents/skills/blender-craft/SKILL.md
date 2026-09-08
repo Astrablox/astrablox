@@ -9,11 +9,11 @@ Two results fail this look, and they fail it for opposite reasons. A primitive w
 
 Everything below is how that is actually made in Blender, and what breaks between Blender and Studio.
 
-## Headless discipline
+## Render discipline
 
-Blender 4.x runs as `blender -b [scene.blend] --python script.py -- args`. There is no viewport, so the render is the only thing that tells you what happened, and a script that exits zero has proved nothing. These all "succeed": an empty camera, an object inside another object, a black frame, a bevel that shredded a corner, a bake that wrote a black image, a modifier that never got applied. Look at every render at full size before deciding the next step.
+Modelling goes through whatever your session has: a Blender MCP bridge into a running Blender, or bpy scripts run headlessly (`blender -b [scene.blend] --python script.py -- args`). Either way the render is the only thing that tells you what happened: a tool call that returned and a script that exited zero have proved nothing. These all "succeed": an empty camera, an object inside another object, a black frame, a bevel that shredded a corner, a bake that wrote a black image, a modifier that never got applied. Look at every render at full size before deciding the next step.
 
-Every asset is produced by a script that can be re-run from its inputs, kept beside the asset. Scenes are `.blend` files; renders are images from cameras that do not move between stages, under light that does not change between stages. When the cameras or the light move, two stages cannot be compared and the work stops being measurable.
+Every asset ends as a `.blend` that can be reopened and, when it was built by script, the script kept beside it. Scenes are `.blend` files; renders are images from cameras that do not move between stages, under light that does not change between stages. When the cameras or the light move, two stages cannot be compared and the work stops being measurable.
 
 ## Shape language
 

@@ -1,22 +1,22 @@
 #!/usr/bin/env bash
-# Start the AstraBlox v1.0 studio on Linux/macOS: one Codex session per lane plus the supervisor, each in
+# Start the AstraBlox v1.0 studio on Linux/macOS: one Codex session per lane, each in
 # a tmux window of session "astra". Lanes and efforts come from tools/board/lanes.json (contract §2, §13).
 #
-#   scripts/run_studio.sh                  # all lanes + supervisor
+#   scripts/run_studio.sh                  # all lanes (add --supervisor for the watchdog)
 #   scripts/run_studio.sh lead world       # subset
-#   scripts/run_studio.sh --stop           # write STOP; the supervisor signals every session and exits
+#   scripts/run_studio.sh --stop           # write STOP; every lane finishes its card and halts
 #   scripts/run_studio.sh --dry-run        # print commands only
 #   tmux attach -t astra                   # look at the windows
 set -euo pipefail
 root="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$root"
-dry=0; nosup=0; lanes=()
+dry=0; sup=0; lanes=()
 for arg in "$@"; do
   case "$arg" in
     --stop) date -u +"STOP requested %Y-%m-%dT%H:%M:%SZ" > STOP; echo "STOP written to $root/STOP"; exit 0 ;;
     --clear-stop) rm -f STOP ;;
     --dry-run) dry=1 ;;
-    --no-supervisor) nosup=1 ;;
+    --supervisor) sup=1 ;;
     -h|--help) sed -n '2,12p' "$0"; exit 0 ;;
     *) lanes+=("$arg") ;;
   esac
@@ -46,7 +46,7 @@ for row in "${table[@]}"; do
   started+=("$name")
 done
 [ "${#started[@]}" -gt 0 ] || { echo "no lanes matched: ${lanes[*]}" >&2; exit 1; }
-if [ "$nosup" = 0 ]; then
+if [ "${sup:-0}" = 1 ]; then
   run supervisor "ASTRA_SESSION=supervisor $py tools/board/supervisor.py; exec bash"
   started+=(supervisor)
 fi
